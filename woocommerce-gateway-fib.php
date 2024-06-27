@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WooCommerce FIB Payments Gateway
- * Plugin URI: https://somewherewarm.com/
+ * Plugin URI: https://github.com/First-Iraqi-Bank/fib-wordpress-payment-sdk
  * Description: Adds the FIB Payments gateway to your WooCommerce website.
  * Version: 1.1.0
  *
- * Author: SomewhereWarm
+ * Author: template by SomewhereWarm
  * Author URI: https://somewherewarm.com/
  *
  * Text Domain: woocommerce-gateway-fib
