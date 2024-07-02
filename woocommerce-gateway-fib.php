@@ -25,6 +25,54 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
+register_activation_hook( __FILE__, 'custom_payment_gateway_activate' );
+
+add_filter( 'woocommerce_store_api_disable_nonce_check', '__return_true' );
+
+
+function custom_payment_gateway_activate() {
+    custom_payment_gateway_create_page();
+}
+
+function custom_payment_gateway_create_page() {
+    $page_title = 'Payment Gateway QR Code';
+    $page_content = '[custom_payment_qr_code]';
+    $page_template = '';
+
+    $page_check = get_page_by_title( $page_title );
+
+    if ( ! isset( $page_check->ID ) ) {
+        $new_page_id = wp_insert_post( array(
+            'post_title'     => $page_title,
+            'post_content'   => $page_content,
+            'post_status'    => 'publish',
+            'post_type'      => 'page',
+            'page_template'  => $page_template,
+        ) );
+
+        update_option( 'custom_payment_gateway_page_id', $new_page_id );
+    }
+}
+
+function custom_payment_qr_code_shortcode() {
+    $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+
+    if ($order_id) {
+        $order = wc_get_order($order_id);
+        if ($order) {
+            if (isset($_SESSION['qr_data'])) {
+                $qr_code_url = base64_decode($_SESSION['qr_data']);
+                return '<img src="' . esc_url($qr_code_url) . '" alt="Payment QR Code">';
+            } else {
+                return 'QR code not found.';
+            }
+        }
+    }
+
+    return 'Order not found.';
+}
+add_shortcode('custom_payment_qr_code', 'custom_payment_qr_code_shortcode');
+
 /**
  * WC FIB Payment gateway plugin class.
  *

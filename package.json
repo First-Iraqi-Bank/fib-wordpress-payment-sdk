@@ -11,7 +11,7 @@
 	},
 	"devDependencies": {
 		"@woocommerce/dependency-extraction-webpack-plugin": "2.2.0",
-		"@wordpress/scripts": "^28.0.0",
+		"@wordpress/scripts": "^28.2.0",
 		"cross-env": "7.0.3"
 	},
 	"scripts": {
@@ -23,5 +23,9 @@
 		"i18n:json": "$(where wp) i18n make-json languages --no-purge",
 		"packages-update": "wp-scripts packages-update",
 		"check-engines": "wp-scripts check-engines"
+	},
+	"dependencies": {
+		"cores": "^0.8.5",
+		"watch": "^1.0.2"
 	}
 }
