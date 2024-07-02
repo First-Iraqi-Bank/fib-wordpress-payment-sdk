@@ -51,8 +51,8 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 		$_SESSION['user'] = 'hey';
 
-		$this->has_fields         = false;
-		$this->supports           = array(
+		$this->has_fields = false;
+		$this->supports = array(
 			'pre-orders',
 			'products',
 			'subscriptions',
@@ -64,7 +64,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			'multiple_subscriptions'
 		);
 
-		$this->method_title       = _x('FIB Payment', 'FIB payment method', 'woocommerce-gateway-fib');
+		$this->method_title = _x('FIB Payment', 'FIB payment method', 'woocommerce-gateway-fib');
 		$this->method_description = __('Allows fib payments.', 'woocommerce-gateway-fib');
 
 		// Load the settings.
@@ -72,9 +72,9 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		$this->init_settings();
 
 		// Define user set variables.
-		$this->username                    = $this->get_option('username');
-		$this->password              = $this->get_option('password');
-		$this->url              = $this->get_option('url');
+		$this->username = $this->get_option('username');
+		$this->password = $this->get_option('password');
+		$this->url = $this->get_option('url');
 
 		// Actions.
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
@@ -88,25 +88,25 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 		$this->form_fields = array(
 			'username' => array(
-				'title'       => __('Username', 'woocommerce-gateway-fib'),
-				'type'        => 'text',
-				'description' => __('your fib username', 'woocommerce-gateway-fib'),
-				'default'     => _x('FIB Payment', 'FIB payment method', 'woocommerce-gateway-fib'),
-				'desc_tip'    => true,
+				'title'=> __('Username', 'woocommerce-gateway-fib'),
+				'type'=> 'text',
+				'description'=> __('your fib username', 'woocommerce-gateway-fib'),
+				'default'=> _x('FIB Payment', 'FIB payment method', 'woocommerce-gateway-fib'),
+				'desc_tip' => true,
 			),
 			'password' => array(
-				'title'       => __('Password', 'woocommerce-gateway-fib'),
-				'type'        => 'password',
-				'description' => __('your fib password', 'woocommerce-gateway-fib'),
-				'default'     => __('The goods are yours. No money needed.', 'woocommerce-gateway-fib'),
-				'desc_tip'    => true,
+				'title'=> __('Password', 'woocommerce-gateway-fib'),
+				'type'=> 'password',
+				'description'=> __('your fib password', 'woocommerce-gateway-fib'),
+				'default'=> __('The goods are yours. No money needed.', 'woocommerce-gateway-fib'),
+				'desc_tip'=> true,
 			),
 			'url' => array(
-				'title'       => 'FIB API URL',
-				'type'        => 'text',
-				'description' => 'the apis url of fib to generate the qr code',
-				'default'     => '',
-				'desc_tip'    => true,
+				'title'=> 'FIB API URL',
+				'type'=> 'text',
+				'description'=> 'the apis url of fib to generate the qr code',
+				'default'=> '',
+				'desc_tip'=> true,
 			),
 		);
 	}
