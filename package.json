@@ -23,5 +23,9 @@
 		"i18n:json": "$(where wp) i18n make-json languages --no-purge",
 		"packages-update": "wp-scripts packages-update",
 		"check-engines": "wp-scripts check-engines"
+	},
+	"dependencies": {
+		"cores": "^0.8.5",
+		"watch": "^1.0.2"
 	}
 }

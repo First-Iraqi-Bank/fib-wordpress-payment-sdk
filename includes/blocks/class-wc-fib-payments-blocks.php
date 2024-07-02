@@ -7,6 +7,8 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
  *
  * @since 1.0.3
  */
+
+ 
 final class WC_Gateway_FIB_Blocks_Support extends AbstractPaymentMethodType
 {
 
@@ -72,7 +74,6 @@ final class WC_Gateway_FIB_Blocks_Support extends AbstractPaymentMethodType
 		if (function_exists('wp_set_script_translations')) {
 			wp_set_script_translations('wc-fib-payments-blocks', 'woocommerce-gateway-fib', WC_FIB_Payments::plugin_abspath() . 'languages/');
 		}
-
 		return ['wc-fib-payments-blocks'];
 	}
 
@@ -91,3 +92,5 @@ final class WC_Gateway_FIB_Blocks_Support extends AbstractPaymentMethodType
 		];
 	}
 }
+
+

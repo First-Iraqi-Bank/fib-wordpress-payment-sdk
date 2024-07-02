@@ -49,6 +49,8 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	public function __construct()
 	{
 
+		$_SESSION['user'] = 'hey';
+
 		$this->has_fields = false;
 		$this->supports = array(
 			'pre-orders',
@@ -115,34 +117,66 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 * @param  int  $order_id
 	 * @return array
 	 */
-	public function process_payment($order_id)
-	{
-		$payment_result = $this->get_option('result');
-		$order = wc_get_order($order_id);
+// 	public function process_payment($order_id)
+// 	{
+// 		$payment_result = $this->get_option('result');
+// 		$order = wc_get_order($order_id);
+// 		$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
 
-		if ('success' === $payment_result) {
-			if ($order->get_total() > 0) {
-				$qrCodeUrl = $this->get_fib_customer_url($order);
-				$_SESSION['qr_data'] = base64_encode($qrCodeUrl);
-			} else {
-				// Payment complete
-				$order->payment_complete();
-			}
-			$order->payment_complete();
+// 		if ('success' === $payment_result) {
+// 			if ($order->get_total() > 0) {
+// 				$qrCodeUrl = $this->get_fib_customer_url($order);
+// 				$_SESSION['qr_data'] = base64_encode($qrCodeUrl);
+// 				echo 'qr code ' . $qrCodeUrl;
+// 			} else {
+// 				// Payment complete
+// 				// $order->payment_complete();
+// 			}
 
+// 			// Remove cart
+// 			WC()->cart->empty_cart();
+
+// 			$custom_page_id = get_option('my_custom_payment_gateway_page_id');
+// 			$custom_page_url = get_permalink($custom_page_id);
+			
+
+// 			// Return thankyou redirect with iframe
+// 			return array(
+// 				'result' 	=> 'success',
+// 				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
+// );
+// 		} else {
+// 			$message = __('Order payment failed. To make a successful payment using FIB Payments, please review the gateway settings.', 'woocommerce-gateway-fib');
+// 			$order->update_status('failed', $message);
+// 			throw new Exception($message);
+// 		}
+		
+// 	}
+
+	public function process_payment($order_id) {
+		try{
+			$order = wc_get_order($order_id);
+
+			$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
+	
+			wc_reduce_stock_levels($order_id);
+	
 			// Remove cart
-			WC()->cart->empty_cart();
-
-			// Return thankyou redirect with iframe
+			// WC()->cart->empty_cart();
+	
+			$custom_page_id = get_option('custom_payment_gateway_page_id');
+			$custom_page_url = get_permalink($custom_page_id);
+	
+			$qrCodeUrl = $this->get_fib_customer_url($order);
+			$_SESSION['qr_data'] = base64_encode($qrCodeUrl);
+	
 			return array(
-				'result' 	=> 'success',
-				'redirect'	=> $this->get_return_url($order),
+				'result'   => 'success',
+				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
 			);
-		} else {
-			$message = __('Order payment failed. To make a successful payment using FIB Payments, please review the gateway settings.', 'woocommerce-gateway-fib');
-			$order->update_status('failed', $message);
-			throw new Exception($message);
-		}
+		}catch(Exception $e){
+			wc_add_notice($e->getMessage(), 'error');
+		}	
 	}
 
 	// function check_fib_payment_status()
@@ -173,6 +207,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 */
 	public function get_fib_customer_url($order)
 	{
+
 		// Create a nonce
 		$nonce = wp_create_nonce('wp_rest');
 
@@ -214,7 +249,6 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 		$response_body2 = wp_remote_retrieve_body($response2);
 		$response_data2 = json_decode($response_body2, true);
-
 		// Store the QR code in a session
 		return $response_data2['qrCode'];
 	}
@@ -236,4 +270,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	// 		$order->update_status('failed', __('Subscription payment failed. To make a successful payment using FIB Payments, please review the gateway settings.', 'woocommerce-gateway-fib'));
 	// 	}
 	// }
+
+	
 }
+

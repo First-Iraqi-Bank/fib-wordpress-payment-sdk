@@ -1360,16 +1360,6 @@ if (false) {} else {
 
 /***/ }),
 
-/***/ "./assets/images/fi_logo.png":
-/*!***********************************!*\
-  !*** ./assets/images/fi_logo.png ***!
-  \***********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-module.exports = __webpack_require__.p + "images/fi_logo.ef8cfdc5.png";
-
-/***/ }),
-
 /***/ "react":
 /*!************************!*\
   !*** external "React" ***!
@@ -1471,18 +1461,6 @@ module.exports = window["wp"]["i18n"];
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -1499,33 +1477,8 @@ module.exports = window["wp"]["i18n"];
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/publicPath */
-/******/ 	(() => {
-/******/ 		var scriptUrl;
-/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
-/******/ 		var document = __webpack_require__.g.document;
-/******/ 		if (!scriptUrl && document) {
-/******/ 			if (document.currentScript)
-/******/ 				scriptUrl = document.currentScript.src;
-/******/ 			if (!scriptUrl) {
-/******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) {
-/******/ 					var i = scripts.length - 1;
-/******/ 					while (i > -1 && (!scriptUrl || !/^http(s?):/.test(scriptUrl))) scriptUrl = scripts[i--].src;
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
-/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
-/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
-/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
-/******/ 		__webpack_require__.p = scriptUrl + "../";
-/******/ 	})();
-/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
 /*!****************************************!*\
   !*** ./resources/js/frontend/index.js ***!
   \****************************************/
@@ -1544,11 +1497,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const settings = (0,_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__.getSetting)('fib_data', {});
-const defaultLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('FIB Payments', 'woo-gutenberg-products-block');
-const qrStyle = {
-  width: '300px'
-};
+// const settings = getSetting( 'fib_data', {} );
+
+// const defaultLabel = __(
+// 	'FIB Payments',
+// 	'woo-gutenberg-products-block'
+// );
+
+// const qrStyle = {
+// 	width: '300px',
+//   };
+
+//   const customLabelStyle = {
+// 	display: 'flex',
+// 	alignItems: 'center', // This ensures vertical centering
+//   };
+
+// const spanContainerStyle = {
+// 	flex: '1 1 100%', // Takes up 50% of the space
+// 	width: '160px',
+//   };
+
+//   const imgContainerStyle = {
+// 	flex: '1 1 50%', // Takes up 50% of the space
+//   };
+
 const label = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_2__.decodeEntities)(settings.title) || defaultLabel;
 /**
  * Content component
@@ -1563,81 +1536,52 @@ const Content = () => {
     })
   });
 };
-const customLabelStyle = {
-  display: 'flex',
-  alignItems: 'center' // This ensures vertical centering
-};
-const spanContainerStyle = {
-  flex: '1 1 100%',
-  // Takes up 50% of the space
-  width: '160px'
-};
-const imgContainerStyle = {
-  flex: '1 1 50%' // Takes up 50% of the space
-};
-const CustomLabelComponent = ({
-  text,
-  iconSrc
-}) => {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-      className: "custom-label",
-      style: customLabelStyle,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        style: imgContainerStyle,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-          src: iconSrc,
-          alt: text
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        style: spanContainerStyle,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-          children: text
-        })
-      })]
-    })
-  });
-};
-/**
- * Label component
- *
- * @param {*} props Props from payment API.
- */
-const Label = props => {
-  const text = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_2__.decodeEntities)(settings.title) || defaultLabel;
-  const icon = __webpack_require__(/*! ../../../assets/images/fi_logo.png */ "./assets/images/fi_logo.png"); // Path to the icon
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(CustomLabelComponent, {
-    text: text,
-    iconSrc: icon
-  });
-};
-jQuery(document).ready(function ($) {
-  // Check if the QR code URL is set
-  console.log('jquery', fibData);
-  if (typeof fibData !== 'undefined' && fibData.qrCodeUrl) {
-    console.log("QR Code URL:", fibData.qrCodeUrl);
-    // You can now use the QR code URL to display the QR code or for other purposes
-  }
-});
+// const CustomLabelComponent = ({ text, iconSrc }) => {
 
-/**
- * FIB payment method config object.
- */
-const FIB = {
-  name: "fib",
-  label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(Label, {}),
-  content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(Content, {}),
-  edit: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(Content, {}),
-  canMakePayment: () => true,
-  ariaLabel: label,
-  supports: {
-    features: settings.supports
-  }
-};
-(0,_woocommerce_blocks_registry__WEBPACK_IMPORTED_MODULE_1__.registerPaymentMethod)(FIB);
-})();
+// 	return (
+// 		<>
+// 		<div className="custom-label" style={customLabelStyle}>
+// 		  <div style={imgContainerStyle}>
+// 			<img src={iconSrc} alt={text} />
+// 			</div>
+// 		  <div style={spanContainerStyle}>
+// 			<span>{text}</span>
+// 			</div>
+// 	  </div>
+// 		</>
+// 	);
+//   };
+// /**
+//  * Label component
+//  *
+//  * @param {*} props Props from payment API.
+//  */
+// const Label = ( props ) => {
+// 	const text = decodeEntities(settings.title) || defaultLabel;
+// 	const icon = require('../../../assets/images/fi_logo.png'); // Path to the icon
 
+// 	return (
+// 		<CustomLabelComponent text={text} iconSrc={icon} />
+// 	  );
+// };
+
+// /**
+//  * FIB payment method config object.
+//  */
+// const FIB = {
+// 	name: "fib",
+// 	label: <Label />,
+// 	content: <Content />,
+// 	edit: <Content />,
+// 	canMakePayment: () => true,
+// 	ariaLabel: label,
+// 	supports: {
+// 		features: settings.supports,
+// 	},
+// };
+
+// registerPaymentMethod( FIB );
 /******/ })()
 ;
 //# sourceMappingURL=blocks.js.map
