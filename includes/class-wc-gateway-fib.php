@@ -119,41 +119,38 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 */
 // 	public function process_payment($order_id)
 // 	{
-// 		$payment_result = $this->get_option('result');
+// 		session_start();
 // 		$order = wc_get_order($order_id);
 // 		$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
 
-// 		if ('success' === $payment_result) {
 // 			if ($order->get_total() > 0) {
-// 				$qrCodeUrl = $this->get_fib_customer_url($order);
-// 				$_SESSION['qr_data'] = base64_encode($qrCodeUrl);
-// 				echo 'qr code ' . $qrCodeUrl;
+// 				// $qrCodeUrl = $this->get_fib_customer_url($order);
+// 				// $_SESSION['qr_data'] = $qrCodeUrl;
 // 			} else {
 // 				// Payment complete
 // 				// $order->payment_complete();
 // 			}
 
 // 			// Remove cart
-// 			WC()->cart->empty_cart();
+// 			// WC()->cart->empty_cart();
 
-// 			$custom_page_id = get_option('my_custom_payment_gateway_page_id');
+// 			$custom_page_id = get_option('custom_payment_gateway_page_id');
 // 			$custom_page_url = get_permalink($custom_page_id);
+// 			$qrCodeUrl = $this->get_fib_customer_url($order);
 			
+// 			$_SESSION['qr_data'] = $qrCodeUrl;
 
 // 			// Return thankyou redirect with iframe
 // 			return array(
 // 				'result' 	=> 'success',
 // 				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
 // );
-// 		} else {
-// 			$message = __('Order payment failed. To make a successful payment using FIB Payments, please review the gateway settings.', 'woocommerce-gateway-fib');
-// 			$order->update_status('failed', $message);
-// 			throw new Exception($message);
-// 		}
+		
 		
 // 	}
 
 	public function process_payment($order_id) {
+		session_start();
 		try{
 			$order = wc_get_order($order_id);
 
@@ -166,10 +163,10 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	
 			$custom_page_id = get_option('custom_payment_gateway_page_id');
 			$custom_page_url = get_permalink($custom_page_id);
-	
 			$qrCodeUrl = $this->get_fib_customer_url($order);
-			$_SESSION['qr_data'] = base64_encode($qrCodeUrl);
-	
+			
+			$_SESSION['qr_data'] = $qrCodeUrl;
+			
 			return array(
 				'result'   => 'success',
 				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
@@ -198,6 +195,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	// 		wp_send_json_error('pending');
 	// 	}
 	// }
+	
 
 	/**
 	 * Get FIB customer URL.
@@ -211,20 +209,24 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		// Create a nonce
 		$nonce = wp_create_nonce('wp_rest');
 
-		// Make a request to the FIB API to generate the QR code
 		$response = wp_remote_post('https://fib.stage.fib.iq/auth/realms/fib-online-shop/protocol/openid-connect/token', array(
 			'headers' => array(
 				'X-WP-Nonce' => $nonce,
-				'Content-Type' => 'application/x-www-form-urlencoded', // Ensure the content type is set for form data
+				'Content-Type' => 'application/x-www-form-urlencoded',
 			),
 			'body' => array(
-				'grant_type' => 'client_credentials', // Replace 'your_grant_type' with the actual grant type
-				'client_id' => 'fib-client-19', // Replace 'your_client_id' with your actual client ID
-				'client_secret' => '480eb521-900f-4070-b0aa-2289ef144766', // Replace 'your_client_secret' with your actual client secret
+				'grant_type' => 'client_credentials',
+				'client_id' => 'fib-client-19',
+				'client_secret' => '480eb521-900f-4070-b0aa-2289ef144766',
 			),
+			'sslverify' => false, // IMPORTANT: remove this line in production
 		));
+
+
 		if (is_wp_error($response)) {
-			throw new Exception(__('Failed to generate FIB customer URL.', 'woocommerce-gateway-fib'));
+			$error_message = $response->get_error_message();
+			echo "Something went wrong: $error_message";
+			// throw new Exception(__('Failed to generate FIB customer URL.', 'woocommerce-gateway-fib'));
 		}
 
 		// Parse the response and get the FIB customer URL
@@ -235,7 +237,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			'headers' => array(
 				'X-WP-Nonce' => $nonce,
 				'Content-Type' => 'application/json', // Set the content type to JSON
-				'Authorization' => 'Bearer ' . $response_data['access_token'], // Add the Authorization bearer header
+				'Authorization' => 'Bearer ' . $response_data['access_token'],
 			),
 			'body' => json_encode(array(
 				'monetaryValue' => array(
@@ -245,13 +247,15 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 				'statusCallbackUrl' => 'https://URL_TO_UPDATE_YOUR_PAYMENT_STATUS',
 				'description' => 'Lorem ipsum dolor sit amet.',
 			)),
+			'sslverify' => false, // IMPORTANT: remove this line in production
 		));
 
 		$response_body2 = wp_remote_retrieve_body($response2);
 		$response_data2 = json_decode($response_body2, true);
-		// Store the QR code in a session
 		return $response_data2['qrCode'];
 	}
+
+
 
 	// /**
 	//  * Process subscription payment.
