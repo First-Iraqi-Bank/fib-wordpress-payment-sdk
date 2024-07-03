@@ -6,8 +6,8 @@
  * Description: Adds the FIB Payments gateway to your WooCommerce website.
  * Version: 1.1.0
  *
- * Author: template by SomewhereWarm
- * Author URI: https://somewherewarm.com/
+ * Author: By Hazhee Himdad
+ * Author URI: https://hazhee.com
  *
  * Text Domain: woocommerce-gateway-fib
  * Domain Path: /i18n/languages/
@@ -27,6 +27,9 @@ if (!defined('ABSPATH')) {
 
 register_activation_hook( __FILE__, 'custom_payment_gateway_activate' );
 
+register_deactivation_hook(__FILE__, 'plugin_deactivation');
+
+
 add_filter( 'woocommerce_store_api_disable_nonce_check', '__return_true' );
 
 
@@ -34,8 +37,18 @@ function custom_payment_gateway_activate() {
     custom_payment_gateway_create_page();
 }
 
+function plugin_deactivation() {
+    $page_title = 'FIB Payment Gateway QR Code';
+
+    $page = get_page_by_title($page_title);
+
+    if ($page) {
+        wp_delete_post($page->ID, true); // 'true' to force delete without sending to trash
+    }
+}
+
 function custom_payment_gateway_create_page() {
-    $page_title = 'Payment Gateway QR Code';
+    $page_title = 'FIB Payment Gateway QR Code';
     $page_content = '[custom_payment_qr_code]';
     $page_template = '';
 
@@ -56,15 +69,18 @@ function custom_payment_gateway_create_page() {
 
 function custom_payment_qr_code_shortcode() {
     $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
-
+	session_start();
     if ($order_id) {
         $order = wc_get_order($order_id);
         if ($order) {
             if (isset($_SESSION['qr_data'])) {
-                $qr_code_url = base64_decode($_SESSION['qr_data']);
-                return '<img src="' . esc_url($qr_code_url) . '" alt="Payment QR Code">';
+                $qr_code_url = $_SESSION['qr_data'];
+				return '<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 55vh;">
+					<p> Scan the QR code bellow to procced the payment </p>
+                    <img src="' . $qr_code_url . '" alt="QR Code" style="width: 300px; height: 300px;">
+                </div>';
             } else {
-                return 'QR code not found.';
+                return 'QR code not found test.';
             }
         }
     }
