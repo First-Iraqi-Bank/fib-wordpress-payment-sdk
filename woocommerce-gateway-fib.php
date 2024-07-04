@@ -29,7 +29,7 @@ register_activation_hook(__FILE__, 'custom_payment_gateway_activate');
 
 register_deactivation_hook(__FILE__, 'plugin_deactivation');
 
-add_filter('woocommerce_store_api_disable_nonce_check', '__return_true');
+add_filter('woocommerce_store_api_disable_nonce_check', '__return_true'); // IMPORTANT this is for testing purposes only, it should be removed in production
 
 function custom_payment_gateway_activate()
 {
@@ -127,34 +127,31 @@ function check_payment_status()
     $payment_id = sanitize_text_field($_GET['payment_id']);
     $order_id = sanitize_text_field($_GET['order_id']);
 	
-    // Get payment status from the FIB API
+	$api_url_auth = get_option('fib_api_url_auth');
+	$api_url_payment = get_option('fib_api_url_payment');
+	$client_id = get_option('fib_client_id');
+	$client_secret = get_option('fib_client_secret');
+	if (empty($api_url_auth) || empty($client_id) || empty($client_secret) || empty($api_url_payment)) {
+		throw new Exception(__('Please configure your FIB settings.', 'woocommerce-gateway-fib'));
+	}
     $nonce = wp_create_nonce('wp_rest');
 
-	$response_auth = wp_remote_post('https://fib.stage.fib.iq/auth/realms/fib-online-shop/protocol/openid-connect/token', array(
+	$response_auth = wp_remote_post($api_url_auth, array(
 		'headers' => array(
 			'X-WP-Nonce' => $nonce,
 			'Content-Type' => 'application/x-www-form-urlencoded',
 		),
 		'body' => array(
 			'grant_type' => 'client_credentials',
-			'client_id' => 'fib-client-19',
-			'client_secret' => '480eb521-900f-4070-b0aa-2289ef144766',
+			'client_id' => $client_id,
+			'client_secret' => $client_secret,
 		),
 		'sslverify' => false, // IMPORTANT: remove this line in production
 	));
 	$response_body_auth = wp_remote_retrieve_body($response_auth);
 	$response_data_auth = json_decode($response_body_auth, true);
 
-	
-    // $response = wp_remote_get('https://fib.stage.fib.iq/protected/v1/payments/' . $payment_id, [
-    //     'headers' => [
-    //         'X-WP-Nonce' => $nonce,
-    //         'Content-Type' => 'application/json',
-    //         'Authorization' => 'Bearer ' . $_SESSION['access_token'],
-    //     ],
-    // ]);
-
-	$response = wp_remote_get('https://fib.stage.fib.iq/protected/v1/payments/' . $payment_id . '/status', array(
+	$response = wp_remote_get($api_url_payment . '/' . $payment_id . '/status', array(
 		'headers' => array(
 			'X-WP-Nonce' => $nonce,
 			'Content-Type' => 'application/json',
@@ -170,9 +167,6 @@ function check_payment_status()
         wp_send_json_error(['status' => 'error']);
     }
 
-   
-	
-
     if ($response_data['status'] === 'PAID') {
         // Payment is successful, update order status
         $order = wc_get_order($order_id);
@@ -186,6 +180,170 @@ function check_payment_status()
 
     wp_die();
 }
+
+add_action('admin_menu', 'fib_payment_gateway_menu');
+
+function fib_payment_gateway_menu() {
+    add_menu_page(
+        'FIB Payment Gateway Settings',
+        'FIB Payment Gateway',
+        'manage_options',
+        'fib-payment-gateway',
+        'fib_payment_gateway_settings_page',
+        'dashicons-admin-generic'
+    );
+}
+
+function fib_payment_gateway_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>FIB Payment Gateway Settings</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('fib_payment_gateway_settings_group');
+            do_settings_sections('fib-payment-gateway');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+add_action('admin_init', 'fib_payment_gateway_settings_init');
+
+function fib_payment_gateway_settings_init() {
+    register_setting('fib_payment_gateway_settings_group', 'fib_api_url_auth', 'fib_api_url_auth_validation');
+    register_setting('fib_payment_gateway_settings_group', 'fib_api_url_payment', 'fib_api_url_payment_validation');
+    register_setting('fib_payment_gateway_settings_group', 'fib_client_id', 'fib_client_id_validation');
+    register_setting('fib_payment_gateway_settings_group', 'fib_client_secret', 'fib_client_secret_validation');
+
+    add_settings_section(
+        'fib_payment_gateway_settings_section',
+        'API Settings',
+        'fib_payment_gateway_settings_section_callback',
+        'fib-payment-gateway'
+    );
+
+    add_settings_field(
+        'fib_api_url_auth',
+        'API URL For Authentication',
+        'fib_api_url_auth_callback',
+        'fib-payment-gateway',
+        'fib_payment_gateway_settings_section'
+    );
+
+	add_settings_field(
+        'fib_api_url_payment',
+        'API URL For Payment and check Status',
+        'fib_api_url_payment_callback',
+        'fib-payment-gateway',
+        'fib_payment_gateway_settings_section'
+    );
+
+
+    add_settings_field(
+        'fib_client_id',
+        'Client ID',
+        'fib_client_id_callback',
+        'fib-payment-gateway',
+        'fib_payment_gateway_settings_section'
+    );
+
+    add_settings_field(
+        'fib_client_secret',
+        'Client Secret',
+        'fib_client_secret_callback',
+        'fib-payment-gateway',
+        'fib_payment_gateway_settings_section'
+    );
+}
+
+
+function fib_payment_gateway_settings_section_callback() {
+    echo 'Enter the FIB API settings below:';
+}
+
+function fib_api_url_auth_callback() {
+    $value = get_option('fib_api_url_auth', '');
+    echo '<input type="text" id="fib_api_url_auth" name="fib_api_url_auth" value="' . esc_attr($value) . '" class="regular-text">';
+}
+
+function fib_api_url_payment_callback() {
+    $value = get_option('fib_api_url_payment', '');
+    echo '<input type="text" id="fib_api_url_payment" name="fib_api_url_payment" value="' . esc_attr($value) . '" class="regular-text">';
+}
+
+function fib_client_id_callback() {
+    $value = get_option('fib_client_id', '');
+    echo '<input type="text" id="fib_client_id" name="fib_client_id" value="' . esc_attr($value) . '" class="regular-text">';
+}
+
+function fib_client_secret_callback() {
+    $value = get_option('fib_client_secret', '');
+    echo '<input type="text" id="fib_client_secret" name="fib_client_secret" value="' . esc_attr($value) . '" class="regular-text">';
+}
+
+function fib_api_url_auth_validation($input) {
+	if (!filter_var($input, FILTER_VALIDATE_URL)) {
+        add_settings_error(
+            'fib_api_url_auth',
+            'invalid-url',
+            'Please enter a valid API Endpoint URL.',
+            'error'
+        );
+        return get_option('fib_api_url_auth');
+    }
+    return esc_url_raw($input);
+	// return sanitize_text_field($input);
+}
+
+function fib_api_url_payment_validation($input) {
+	if (!filter_var($input, FILTER_VALIDATE_URL)) {
+		add_settings_error(
+			'fib_payment_api_url',
+			'invalid-url',
+			'Please enter a valid API Endpoint URL.',
+			'error'
+		);
+		return get_option('fib_payment_api_url');
+	}
+	return esc_url_raw($input);
+}
+
+function fib_client_id_validation($input) {
+
+	if (empty($input) || !preg_match('/^[a-zA-Z0-9_-]+$/', $input)) {
+		add_settings_error(
+			'fib_client_id',
+			'invalid-client-id',
+			'Please enter a valid API Client ID.',
+			'error'
+		);
+		return get_option('fib_client_id');
+	}
+    return sanitize_text_field($input);
+}
+
+function fib_client_secret_validation($input) {
+	if (empty($input)) {
+        add_settings_error(
+            'fib_client_secret',
+            'invalid-client-secret',
+            'Please enter a valid API Client Secret.',
+            'error'
+        );
+        return get_option('fib_client_secret');
+    }
+    return sanitize_text_field($input);
+}
+
+
+if (is_admin()) {
+    add_action('admin_notices', function() {
+        settings_errors();
+    });
+}
+
+
 
 
 /**

@@ -164,7 +164,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 			// Remove cart
 			// WC()->cart->empty_cart();
-
+	
 			$custom_page_id = get_option('custom_payment_gateway_page_id');
 			$custom_page_url = get_permalink($custom_page_id);
 			$qrCodeUrl = $this->get_fib_customer_url($order);
@@ -216,15 +216,41 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		// Create a nonce
 		$nonce = wp_create_nonce('wp_rest');
 
-		$response = wp_remote_post($_ENV['FIB_API_URL_LOGIN'], array(
+		$api_url_auth = get_option('fib_api_url_auth');
+		$api_url_payment = get_option('fib_api_url_payment');
+		$client_id = get_option('fib_client_id');
+		$client_secret = get_option('fib_client_secret');
+		if (empty($api_url_auth) || empty($client_id) || empty($client_secret) || empty($api_url_payment)) {
+			throw new Exception(__('Please configure your FIB settings.', 'woocommerce-gateway-fib'));
+		}
+
+		$response = wp_remote_post($api_url_auth, array(
 			'headers' => array(
 				'X-WP-Nonce' => $nonce,
 				'Content-Type' => 'application/x-www-form-urlencoded',
 			),
 			'body' => array(
-				'grant_type' => $_ENV['FIB_API_CREDENTIALS'],
-				'client_id' => $_ENV['FIB_API_CLIENT'],
-				'client_secret' => $_ENV['FIB_API_SECRET'],
+				'grant_type' => 'client_credentials',
+				'client_id' => $client_id,
+				'client_secret' => $client_secret,
+			),
+			'sslverify' => false, // IMPORTANT: remove this line in production
+		));
+
+		if (is_wp_error($response)) {
+			$error_message = $response->get_error_message();
+			echo "Something went wrong: $error_message";
+			// throw new Exception(__('Failed to generate FIB customer URL.', 'woocommerce-gateway-fib'));
+		}
+
+		$response = wp_remote_post($api_url_auth, array(			'headers' => array(
+				'X-WP-Nonce' => $nonce,
+				'Content-Type' => 'application/x-www-form-urlencoded',
+			),
+			'body' => array(
+				'grant_type' => 'client_credentials',
+				'client_id' => 'fib-client-19',
+				'client_secret' => '480eb521-900f-4070-b0aa-2289ef144766',
 			),
 			'sslverify' => false, // IMPORTANT: remove this line in production
 		));
@@ -240,10 +266,10 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		$response_body = wp_remote_retrieve_body($response);
 		$response_data = json_decode($response_body, true);
 
-		$response2 = wp_remote_post($_ENV['FIB_API_URL_CREATE_PAYMENT'], array(
+		$response2 = wp_remote_post($api_url_payment, array(
 			'headers' => array(
 				'X-WP-Nonce' => $nonce,
-				'Content-Type' => 'application/json', // Set the content type to JSON
+				'Content-Type' => 'application/json',
 				'Authorization' => 'Bearer ' . $response_data['access_token'],
 			),
 			'body' => json_encode(array(
@@ -262,6 +288,8 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 		$_SESSION['payment_id'] = $response_data2['paymentId'];
 		$_SESSION['access_token'] = $response_data['access_token'];
+		// echo $_SESSION['access_token'];
+		// exit;
 
 		return $response_data2['qrCode'];
 	}
