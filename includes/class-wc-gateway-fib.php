@@ -1,5 +1,6 @@
 <?php
-
+require_once 'functions.php';
+loadEnvironmentVariables(__DIR__ . '/../.env');
 /**
  * WC_Gateway_FIB class
  *	
@@ -80,7 +81,6 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
 		add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
 		add_action('woocommerce_api_wc_gateway_' . $this->id, array($this, 'check_response'));
-
 	}
 
 	/**
@@ -91,25 +91,25 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 		$this->form_fields = array(
 			'username' => array(
-				'title'=> __('Username', 'woocommerce-gateway-fib'),
-				'type'=> 'text',
-				'description'=> __('your fib username', 'woocommerce-gateway-fib'),
-				'default'=> _x('FIB Payment', 'FIB payment method', 'woocommerce-gateway-fib'),
+				'title' => __('Username', 'woocommerce-gateway-fib'),
+				'type' => 'text',
+				'description' => __('your fib username', 'woocommerce-gateway-fib'),
+				'default' => _x('FIB Payment', 'FIB payment method', 'woocommerce-gateway-fib'),
 				'desc_tip' => true,
 			),
 			'password' => array(
-				'title'=> __('Password', 'woocommerce-gateway-fib'),
-				'type'=> 'password',
-				'description'=> __('your fib password', 'woocommerce-gateway-fib'),
-				'default'=> __('The goods are yours. No money needed.', 'woocommerce-gateway-fib'),
-				'desc_tip'=> true,
+				'title' => __('Password', 'woocommerce-gateway-fib'),
+				'type' => 'password',
+				'description' => __('your fib password', 'woocommerce-gateway-fib'),
+				'default' => __('The goods are yours. No money needed.', 'woocommerce-gateway-fib'),
+				'desc_tip' => true,
 			),
 			'url' => array(
-				'title'=> 'FIB API URL',
-				'type'=> 'text',
-				'description'=> 'the apis url of fib to generate the qr code',
-				'default'=> '',
-				'desc_tip'=> true,
+				'title' => 'FIB API URL',
+				'type' => 'text',
+				'description' => 'the apis url of fib to generate the qr code',
+				'default' => '',
+				'desc_tip' => true,
 			),
 		);
 	}
@@ -120,69 +120,67 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 * @param  int  $order_id
 	 * @return array
 	 */
-// 	public function process_payment($order_id)
-// 	{
-// 		session_start();
-// 		$order = wc_get_order($order_id);
-// 		$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
+	// 	public function process_payment($order_id)
+	// 	{
+	// 		session_start();
+	// 		$order = wc_get_order($order_id);
+	// 		$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
 
-// 			if ($order->get_total() > 0) {
-// 				// $qrCodeUrl = $this->get_fib_customer_url($order);
-// 				// $_SESSION['qr_data'] = $qrCodeUrl;
-// 			} else {
-// 				// Payment complete
-// 				// $order->payment_complete();
-// 			}
+	// 			if ($order->get_total() > 0) {
+	// 				// $qrCodeUrl = $this->get_fib_customer_url($order);
+	// 				// $_SESSION['qr_data'] = $qrCodeUrl;
+	// 			} else {
+	// 				// Payment complete
+	// 				// $order->payment_complete();
+	// 			}
 
-// 			// Remove cart
-// 			// WC()->cart->empty_cart();
+	// 			// Remove cart
+	// 			// WC()->cart->empty_cart();
 
-// 			$custom_page_id = get_option('custom_payment_gateway_page_id');
-// 			$custom_page_url = get_permalink($custom_page_id);
-// 			$qrCodeUrl = $this->get_fib_customer_url($order);
-			
-// 			$_SESSION['qr_data'] = $qrCodeUrl;
+	// 			$custom_page_id = get_option('custom_payment_gateway_page_id');
+	// 			$custom_page_url = get_permalink($custom_page_id);
+	// 			$qrCodeUrl = $this->get_fib_customer_url($order);
 
-// 			// Return thankyou redirect with iframe
-// 			return array(
-// 				'result' 	=> 'success',
-// 				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
-// );
-		
-		
-// 	}
+	// 			$_SESSION['qr_data'] = $qrCodeUrl;
 
-	public function process_payment($order_id) {
+	// 			// Return thankyou redirect with iframe
+	// 			return array(
+	// 				'result' 	=> 'success',
+	// 				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
+	// );
+
+
+	// 	}
+
+	public function process_payment($order_id)
+	{
 		session_start();
-		try{
+		try {
 			$order = wc_get_order($order_id);
 
 			$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
-	
+
 			wc_reduce_stock_levels($order_id);
-	
+
 			// Remove cart
 			// WC()->cart->empty_cart();
-
-			$api = get_option('custom_payment_gateway_page_id');
-
 	
 			$custom_page_id = get_option('custom_payment_gateway_page_id');
 			$custom_page_url = get_permalink($custom_page_id);
 			$qrCodeUrl = $this->get_fib_customer_url($order);
-			
+
 			$_SESSION['qr_data'] = $qrCodeUrl;
 
 			$payment_id = $this->get_payment_id_from_api();
-            $_SESSION['payment_id'] = $payment_id;
-			
+			$_SESSION['payment_id'] = $payment_id;
+
 			return array(
 				'result'   => 'success',
 				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
 			);
-		}catch(Exception $e){
+		} catch (Exception $e) {
 			wc_add_notice($e->getMessage(), 'error');
-		}	
+		}
 	}
 
 	// function check_fib_payment_status()
@@ -204,7 +202,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	// 		wp_send_json_error('pending');
 	// 	}
 	// }
-	
+
 
 	/**
 	 * Get FIB customer URL.
@@ -245,15 +243,14 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			// throw new Exception(__('Failed to generate FIB customer URL.', 'woocommerce-gateway-fib'));
 		}
 
-		$response = wp_remote_post($api_url_auth, array(
-			'headers' => array(
+		$response = wp_remote_post($api_url_auth, array(			'headers' => array(
 				'X-WP-Nonce' => $nonce,
 				'Content-Type' => 'application/x-www-form-urlencoded',
 			),
 			'body' => array(
 				'grant_type' => 'client_credentials',
-				'client_id' => $client_id,
-				'client_secret' => $client_secret,
+				'client_id' => 'fib-client-19',
+				'client_secret' => '480eb521-900f-4070-b0aa-2289ef144766',
 			),
 			'sslverify' => false, // IMPORTANT: remove this line in production
 		));
@@ -285,16 +282,20 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			)),
 			'sslverify' => false, // IMPORTANT: remove this line in production
 		));
-		
+
 		$response_body2 = wp_remote_retrieve_body($response2);
 		$response_data2 = json_decode($response_body2, true);
 
 		$_SESSION['payment_id'] = $response_data2['paymentId'];
 		$_SESSION['access_token'] = $response_data['access_token'];
+		// echo $_SESSION['access_token'];
+		// exit;
+
 		return $response_data2['qrCode'];
 	}
 
-	public function get_payment_id_from_api() {
+	public function get_payment_id_from_api()
+	{
 		if (isset($_SESSION['payment_id'])) {
 			return $_SESSION['payment_id'];
 		}
@@ -302,7 +303,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		throw new Exception(__('Payment ID not found.', 'woocommerce-gateway-fib'));
 	}
 
-	
+
 
 
 
@@ -324,6 +325,5 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	// 	}
 	// }
 
-	
-}
 
+}
