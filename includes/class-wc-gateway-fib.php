@@ -78,6 +78,9 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 		// Actions.
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+		add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
+		add_action('woocommerce_api_wc_gateway_' . $this->id, array($this, 'check_response'));
+
 	}
 
 	/**
@@ -166,6 +169,9 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			$qrCodeUrl = $this->get_fib_customer_url($order);
 			
 			$_SESSION['qr_data'] = $qrCodeUrl;
+
+			$payment_id = $this->get_payment_id_from_api();
+            $_SESSION['payment_id'] = $payment_id;
 			
 			return array(
 				'result'   => 'success',
@@ -241,7 +247,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			),
 			'body' => json_encode(array(
 				'monetaryValue' => array(
-					'amount' => '500.00',
+					'amount' => $order->get_total(),
 					'currency' => 'IQD',
 				),
 				'statusCallbackUrl' => 'https://URL_TO_UPDATE_YOUR_PAYMENT_STATUS',
@@ -249,11 +255,27 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			)),
 			'sslverify' => false, // IMPORTANT: remove this line in production
 		));
-
+		
 		$response_body2 = wp_remote_retrieve_body($response2);
 		$response_data2 = json_decode($response_body2, true);
+
+		$_SESSION['payment_id'] = $response_data2['paymentId'];
+		$_SESSION['access_token'] = $response_data['access_token'];
+		// echo $_SESSION['access_token'];
+		// exit;
+
 		return $response_data2['qrCode'];
 	}
+
+	public function get_payment_id_from_api() {
+		if (isset($_SESSION['payment_id'])) {
+			return $_SESSION['payment_id'];
+		}
+
+		throw new Exception(__('Payment ID not found.', 'woocommerce-gateway-fib'));
+	}
+
+	
 
 
 
