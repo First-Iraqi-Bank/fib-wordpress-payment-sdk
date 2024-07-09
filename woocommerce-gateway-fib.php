@@ -172,7 +172,8 @@ function check_payment_status()
         $order = wc_get_order($order_id);
         $order->payment_complete();
         WC()->cart->empty_cart();
-
+		$order->update_meta_data('fib_payment_status', 'Paid via FIB Payment Gateway');
+        $order->save();
         wp_send_json_success(['status' => 'PAID']);
     } else {
         wp_send_json_success(['status' => 'UNPAID']);
