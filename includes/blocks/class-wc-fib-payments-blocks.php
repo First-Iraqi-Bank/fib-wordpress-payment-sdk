@@ -53,15 +53,15 @@ final class WC_Gateway_FIB_Blocks_Support extends AbstractPaymentMethodType
 	 */
 	public function get_payment_method_script_handles()
 	{
-		$script_path       = '/assets/js/frontend/blocks.js';
+		$script_path= '/assets/js/frontend/blocks.js';
 		$script_asset_path = WC_FIB_Payments::plugin_abspath() . 'assets/js/frontend/blocks.asset.php';
-		$script_asset      = file_exists($script_asset_path)
+		$script_asset= file_exists($script_asset_path)
 			? require($script_asset_path)
 			: array(
 				'dependencies' => array(),
 				'version'      => '1.2.0'
 			);
-		$script_url        = WC_FIB_Payments::plugin_url() . $script_path;
+		$script_url= WC_FIB_Payments::plugin_url() . $script_path;
 
 		wp_register_script(
 			'wc-fib-payments-blocks',
@@ -85,10 +85,10 @@ final class WC_Gateway_FIB_Blocks_Support extends AbstractPaymentMethodType
 	public function get_payment_method_data()
 	{
 		return [
-			'title'       => $this->get_setting('title'),
-			'description' => $this->get_setting('description'),
-			'icon'         => plugin_dir_url(__DIR__) . 'assets/images/fi_logo.png',
-			'supports'    => array_filter($this->gateway->supports, [$this->gateway, 'supports'])
+			'title'=> $this->get_setting('title'),
+			'description'=> $this->get_setting('description'),
+			'icon'=> plugin_dir_url(__DIR__) . 'assets/images/fi_logo.png',
+			'supports'=> array_filter($this->gateway->supports, [$this->gateway, 'supports'])
 		];
 	}
 }

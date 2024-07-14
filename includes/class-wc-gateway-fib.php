@@ -1,5 +1,9 @@
 <?php
 require_once 'functions.php';
+// Include the API classes
+require_once 'class-wc-fib-api-auth.php';
+require_once 'class-wc-fib-api-payment.php';
+
 loadEnvironmentVariables(__DIR__ . '/../.env');
 /**
  * WC_Gateway_FIB class
@@ -114,44 +118,6 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		);
 	}
 
-	/**
-	 * Process the payment and return the result.
-	 *
-	 * @param  int  $order_id
-	 * @return array
-	 */
-	// 	public function process_payment($order_id)
-	// 	{
-	// 		session_start();
-	// 		$order = wc_get_order($order_id);
-	// 		$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
-
-	// 			if ($order->get_total() > 0) {
-	// 				// $qrCodeUrl = $this->get_fib_customer_url($order);
-	// 				// $_SESSION['qr_data'] = $qrCodeUrl;
-	// 			} else {
-	// 				// Payment complete
-	// 				// $order->payment_complete();
-	// 			}
-
-	// 			// Remove cart
-	// 			// WC()->cart->empty_cart();
-
-	// 			$custom_page_id = get_option('custom_payment_gateway_page_id');
-	// 			$custom_page_url = get_permalink($custom_page_id);
-	// 			$qrCodeUrl = $this->get_fib_customer_url($order);
-
-	// 			$_SESSION['qr_data'] = $qrCodeUrl;
-
-	// 			// Return thankyou redirect with iframe
-	// 			return array(
-	// 				'result' 	=> 'success',
-	// 				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
-	// );
-
-
-	// 	}
-
 	public function process_payment($order_id)
 	{
 		session_start();
@@ -161,9 +127,6 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
 
 			wc_reduce_stock_levels($order_id);
-
-			// Remove cart
-			// WC()->cart->empty_cart();
 	
 			$custom_page_id = get_option('custom_payment_gateway_page_id');
 			$custom_page_url = get_permalink($custom_page_id);
@@ -182,28 +145,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			wc_add_notice($e->getMessage(), 'error');
 		}
 	}
-
-	// function check_fib_payment_status()
-	// {
-	// 	$order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
-	// 	$order = wc_get_order($order_id);
-
-	// 	if (!$order) {
-	// 		wp_send_json_error('Order not found.');
-	// 	}
-
-	// 	// Replace this with the actual check for the FIB payment status
-	// 	// For example, check if the order status is 'completed'
-	// 	$payment_status = $order->get_status();
-
-	// 	if ($payment_status === 'completed') {
-	// 		wp_send_json_success('completed');
-	// 	} else {
-	// 		wp_send_json_error('pending');
-	// 	}
-	// }
-
-
+	
 	/**
 	 * Get FIB customer URL.
 	 *
@@ -212,86 +154,9 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 */
 	public function get_fib_customer_url($order)
 	{
-
-		// Create a nonce
-		$nonce = wp_create_nonce('wp_rest');
-
-		$api_url_auth = get_option('fib_api_url_auth');
-		$api_url_payment = get_option('fib_api_url_payment');
-		$client_id = get_option('fib_client_id');
-		$client_secret = get_option('fib_client_secret');
-		if (empty($api_url_auth) || empty($client_id) || empty($client_secret) || empty($api_url_payment)) {
-			throw new Exception(__('Please configure your FIB settings.', 'woocommerce-gateway-fib'));
-		}
-
-		$response = wp_remote_post($api_url_auth, array(
-			'headers' => array(
-				'X-WP-Nonce' => $nonce,
-				'Content-Type' => 'application/x-www-form-urlencoded',
-			),
-			'body' => array(
-				'grant_type' => 'client_credentials',
-				'client_id' => $client_id,
-				'client_secret' => $client_secret,
-			),
-			'sslverify' => false, // IMPORTANT: remove this line in production
-		));
-
-		if (is_wp_error($response)) {
-			$error_message = $response->get_error_message();
-			echo "Something went wrong: $error_message";
-			// throw new Exception(__('Failed to generate FIB customer URL.', 'woocommerce-gateway-fib'));
-		}
-
-		$response = wp_remote_post($api_url_auth, array(			'headers' => array(
-				'X-WP-Nonce' => $nonce,
-				'Content-Type' => 'application/x-www-form-urlencoded',
-			),
-			'body' => array(
-				'grant_type' => 'client_credentials',
-				'client_id' => 'fib-client-19',
-				'client_secret' => '480eb521-900f-4070-b0aa-2289ef144766',
-			),
-			'sslverify' => false, // IMPORTANT: remove this line in production
-		));
-
-
-		if (is_wp_error($response)) {
-			$error_message = $response->get_error_message();
-			echo "Something went wrong: $error_message";
-			// throw new Exception(__('Failed to generate FIB customer URL.', 'woocommerce-gateway-fib'));
-		}
-
-		// Parse the response and get the FIB customer URL
-		$response_body = wp_remote_retrieve_body($response);
-		$response_data = json_decode($response_body, true);
-
-		$response2 = wp_remote_post($api_url_payment, array(
-			'headers' => array(
-				'X-WP-Nonce' => $nonce,
-				'Content-Type' => 'application/json',
-				'Authorization' => 'Bearer ' . $response_data['access_token'],
-			),
-			'body' => json_encode(array(
-				'monetaryValue' => array(
-					'amount' => $order->get_total(),
-					'currency' => 'IQD',
-				),
-				'statusCallbackUrl' => 'https://URL_TO_UPDATE_YOUR_PAYMENT_STATUS',
-				'description' => 'Lorem ipsum dolor sit amet.',
-			)),
-			'sslverify' => false, // IMPORTANT: remove this line in production
-		));
-
-		$response_body2 = wp_remote_retrieve_body($response2);
-		$response_data2 = json_decode($response_body2, true);
-
-		$_SESSION['payment_id'] = $response_data2['paymentId'];
-		$_SESSION['access_token'] = $response_data['access_token'];
-		// echo $_SESSION['access_token'];
-		// exit;
-
-		return $response_data2['qrCode'];
+		$access_token = WC_FIB_API_Auth::get_access_token();
+		$qr_code = WC_FIB_API_Payment::create_qr_code($order, $access_token);
+		return $qr_code;
 	}
 
 	public function get_payment_id_from_api()
@@ -302,28 +167,4 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 		throw new Exception(__('Payment ID not found.', 'woocommerce-gateway-fib'));
 	}
-
-
-
-
-
-	// /**
-	//  * Process subscription payment.
-	//  *
-	//  * @param  float     $amount
-	//  * @param  WC_Order  $order
-	//  * @return void
-	//  */
-	// public function process_subscription_payment($amount, $order)
-	// {
-	// 	$payment_result = $this->get_option('result');
-
-	// 	if ('success' === $payment_result) {
-	// 		$order->payment_complete();
-	// 	} else {
-	// 		$order->update_status('failed', __('Subscription payment failed. To make a successful payment using FIB Payments, please review the gateway settings.', 'woocommerce-gateway-fib'));
-	// 	}
-	// }
-
-
 }
