@@ -12,7 +12,12 @@ class WC_FIB_API_Payment {
 		$nonce = wp_create_nonce('wp_rest');
 
         if (empty($api_url_payment)) {
-            throw new Exception(__('Please configure your FIB settings.', 'woocommerce-gateway-fib'));
+            wc_add_notice('Please configure your FIB settings.', 'error' ); 
+            exit;
+        }
+        if (empty($access_token)) {
+            wc_add_notice('Unauthorized or expired token.', 'error' ); 
+            exit;
         }
 
         $response = wp_remote_post($api_url_payment, array(
@@ -29,17 +34,17 @@ class WC_FIB_API_Payment {
                 'statusCallbackUrl' => 'https://URL_TO_UPDATE_YOUR_PAYMENT_STATUS',
                 'description' => 'Lorem ipsum dolor sit amet.',
             )),
-            'sslverify' => false, // IMPORTANT: remove this line in production
+            // 'sslverify' => false, // IMPORTANT: remove this line in production
         ));
 
-        if (is_wp_error($response)) {
-            $error_message = $response->get_error_message();
-            throw new Exception("Something went wrong: $error_message");
-        }
-
+        $response_code = wp_remote_retrieve_response_code($response);
         $response_body = wp_remote_retrieve_body($response);
         $response_data = json_decode($response_body, true);
 
+        if ($response_code != 200 && $response_code != 201) {
+            wc_add_notice('something went wrong: ' . wp_remote_retrieve_body($response), 'error' ); 
+            exit;
+        }
         $_SESSION['payment_id'] = $response_data['paymentId'];
 
         return $response_data['qrCode'];

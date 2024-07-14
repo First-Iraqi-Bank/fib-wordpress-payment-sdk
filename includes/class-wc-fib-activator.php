@@ -1,5 +1,7 @@
 <?php
-
+if (!defined('ABSPATH')) {
+    exit();
+}
 class wc_fib_activator
 {
     /**
@@ -24,7 +26,7 @@ class wc_fib_activator
             $new_page_id = wp_insert_post([
                 'post_title' => $page_title,
                 'post_content' => $page_content,
-                'post_status' => 'publish',
+                'post_status' => 'private',
                 'post_type' => 'page',
                 'page_template' => $page_template,
             ]);

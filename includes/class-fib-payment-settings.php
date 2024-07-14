@@ -60,7 +60,7 @@ class FIB_Payment_Settings {
 
         add_settings_field(
             'fib_api_url_payment',
-            'API URL For Payment and Check Status',
+            'API URL For Payment',
             [__CLASS__, 'api_url_payment_callback'],
             'fib-payment-gateway',
             'fib_payment_gateway_settings_section'
