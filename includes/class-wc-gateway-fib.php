@@ -77,9 +77,9 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		$this->init_settings();
 
 		// Define user set variables.
-		$this->username = $this->get_option('username');
-		$this->password = $this->get_option('password');
-		$this->url = $this->get_option('url');
+		// $this->username = $this->get_option('username');
+		// $this->password = $this->get_option('password');
+		// $this->url = $this->get_option('url');
 
 		// Actions.
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
@@ -154,9 +154,15 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 */
 	public function get_fib_customer_url($order)
 	{
-		$access_token = WC_FIB_API_Auth::get_access_token();
-		$qr_code = WC_FIB_API_Payment::create_qr_code($order, $access_token);
-		return $qr_code;
+		try {
+			$access_token = WC_FIB_API_Auth::get_access_token();
+			$qr_code = WC_FIB_API_Payment::create_qr_code($order, $access_token);
+			return $qr_code;
+		} catch (Exception $e) {
+			wc_add_notice($e->getMessage(), 'error');
+			error_log($e->getMessage());
+			return false;
+		}
 	}
 
 	public function get_payment_id_from_api()

@@ -15,6 +15,8 @@ class WC_FIB_Shortcodes {
     }
 
     public static function custom_payment_qr_code_shortcode() {
+        ob_start();
+        wc_print_notices();
         $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
         session_start();
         if ($order_id) {
@@ -40,8 +42,16 @@ class WC_FIB_Shortcodes {
                                     order_id: "' . $order_id . '"
                                 },
                                 success: function(response) {
-                                    if (response.data.status === "PAID") {
-                                        window.location.href = "' . home_url('/checkout/order-received/') . '?order_id=' . $order_id . '";
+                                    try {
+                                        if (response.success && response.data.status === "PAID") {
+                                            window.location.href = "' . home_url('/checkout/order-received/') . '?order_id=' . $order_id . '";
+                                        } else if (!response.success) {
+                                            window.location.href = "' . home_url('/checkout') . '?order_id=' . $order_id . '";
+                                        }
+
+                                    } catch (e) {
+                                        // document.body.innerHTML = "<h1>Error checking payment status.</h1>";
+                                        console.log(response);
                                     }
                                 },
                                 error: function(response) {
@@ -69,7 +79,10 @@ class WC_FIB_Shortcodes {
         $access_token = WC_FIB_API_Auth::get_access_token();
 
         $paymen_status = WC_FIB_STATUS_Payment::payment_status($payment_id, $access_token);
-
+        if ($paymen_status === false) {
+            $errors = wc_get_notices('error');
+            wp_send_json_error(['errors' => $errors]);
+        }
         if ($paymen_status === 'PAID') {
             $order = wc_get_order($order_id);
             $order->payment_complete();
