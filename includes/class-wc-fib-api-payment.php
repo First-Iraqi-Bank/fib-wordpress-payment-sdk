@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 class WC_FIB_API_Payment {
 
     public static function create_qr_code($order, $access_token) {
+        session_start();
         $fib_base_url = get_option('fib_base_url');
 
         // Create a nonce
@@ -47,7 +48,6 @@ class WC_FIB_API_Payment {
             exit;
         }
         $_SESSION['payment_id'] = $response_data['paymentId'];
-
         return $response_data['qrCode'];
     }
 }
