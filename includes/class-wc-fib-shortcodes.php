@@ -50,12 +50,11 @@ class WC_FIB_Shortcodes {
                                         }
 
                                     } catch (e) {
-                                        // document.body.innerHTML = "<h1>Error checking payment status.</h1>";
-                                        console.log(response);
+                                        throw new Error("Error checking payment status.");
                                     }
                                 },
                                 error: function(response) {
-                                    console.log("Error checking payment status.");
+                                    throw new Error("Error something went wrong.");
                                 }
                             });
                         }
@@ -69,8 +68,6 @@ class WC_FIB_Shortcodes {
         }
         return 'Order not found.';
     }
-
-
 
     public static function check_payment_status() {
         $payment_id = sanitize_text_field($_GET['payment_id']);

@@ -38,8 +38,7 @@ class FIB_Payment_Settings {
     }
 
     public static function settings_init() {
-        register_setting('fib_payment_gateway_settings_group', 'fib_api_url_auth', [__CLASS__, 'api_url_auth_validation']);
-        register_setting('fib_payment_gateway_settings_group', 'fib_api_url_payment', [__CLASS__, 'api_url_payment_validation']);
+        register_setting('fib_payment_gateway_settings_group', 'fib_base_url', [__CLASS__, 'api_url_auth_validation']);
         register_setting('fib_payment_gateway_settings_group', 'fib_client_id', [__CLASS__, 'client_id_validation']);
         register_setting('fib_payment_gateway_settings_group', 'fib_client_secret', [__CLASS__, 'client_secret_validation']);
 
@@ -51,17 +50,9 @@ class FIB_Payment_Settings {
         );
 
         add_settings_field(
-            'fib_api_url_auth',
-            'API URL For Authentication',
+            'fib_base_url',
+            'FIB Base URL',
             [__CLASS__, 'api_url_auth_callback'],
-            'fib-payment-gateway',
-            'fib_payment_gateway_settings_section'
-        );
-
-        add_settings_field(
-            'fib_api_url_payment',
-            'API URL For Payment',
-            [__CLASS__, 'api_url_payment_callback'],
             'fib-payment-gateway',
             'fib_payment_gateway_settings_section'
         );
@@ -88,13 +79,8 @@ class FIB_Payment_Settings {
     }
 
     public static function api_url_auth_callback() {
-        $value = get_option('fib_api_url_auth', '');
-        echo '<input type="text" id="fib_api_url_auth" name="fib_api_url_auth" value="' . esc_attr($value) . '" class="regular-text">';
-    }
-
-    public static function api_url_payment_callback() {
-        $value = get_option('fib_api_url_payment', '');
-        echo '<input type="text" id="fib_api_url_payment" name="fib_api_url_payment" value="' . esc_attr($value) . '" class="regular-text">';
+        $value = get_option('fib_base_url', '');
+        echo '<input type="text" id="fib_base_url" name="fib_base_url" value="' . esc_attr($value) . '" class="regular-text">';
     }
 
     public static function client_id_callback() {
@@ -110,25 +96,12 @@ class FIB_Payment_Settings {
     public static function api_url_auth_validation($input) {
         if (!filter_var($input, FILTER_VALIDATE_URL)) {
             add_settings_error(
-                'fib_api_url_auth',
+                'fib_base_url',
                 'invalid-url',
                 'Please enter a valid API Endpoint URL.',
                 'error'
             );
-            return get_option('fib_api_url_auth');
-        }
-        return esc_url_raw($input);
-    }
-
-    public static function api_url_payment_validation($input) {
-        if (!filter_var($input, FILTER_VALIDATE_URL)) {
-            add_settings_error(
-                'fib_payment_api_url',
-                'invalid-url',
-                'Please enter a valid API Endpoint URL.',
-                'error'
-            );
-            return get_option('fib_payment_api_url');
+            return get_option('fib_base_url');
         }
         return esc_url_raw($input);
     }
