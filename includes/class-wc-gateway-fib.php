@@ -5,13 +5,6 @@ require_once 'class-wc-fib-api-auth.php';
 require_once 'class-wc-fib-api-payment.php';
 
 loadEnvironmentVariables(__DIR__ . '/../.env');
-/**
- * WC_Gateway_FIB class
- *	
- * @author   template by SomewhereWarm <info@somewherewarm.gr>
- * @package  WooCommerce FIB Payments Gateway
- * @since    1.0.0
- */
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
@@ -73,49 +66,12 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		$this->method_description = __('Allows fib payments.', 'woocommerce-gateway-fib');
 
 		// Load the settings.
-		$this->init_form_fields();
 		$this->init_settings();
-
-		// Define user set variables.
-		// $this->username = $this->get_option('username');
-		// $this->password = $this->get_option('password');
-		// $this->url = $this->get_option('url');
 
 		// Actions.
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
 		add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
 		add_action('woocommerce_api_wc_gateway_' . $this->id, array($this, 'check_response'));
-	}
-
-	/**
-	 * Initialise Gateway Settings Form Fields.
-	 */
-	public function init_form_fields()
-	{
-
-		$this->form_fields = array(
-			'username' => array(
-				'title' => __('Username', 'woocommerce-gateway-fib'),
-				'type' => 'text',
-				'description' => __('your fib username', 'woocommerce-gateway-fib'),
-				'default' => _x('FIB Payment', 'FIB payment method', 'woocommerce-gateway-fib'),
-				'desc_tip' => true,
-			),
-			'password' => array(
-				'title' => __('Password', 'woocommerce-gateway-fib'),
-				'type' => 'password',
-				'description' => __('your fib password', 'woocommerce-gateway-fib'),
-				'default' => __('The goods are yours. No money needed.', 'woocommerce-gateway-fib'),
-				'desc_tip' => true,
-			),
-			'url' => array(
-				'title' => 'FIB API URL',
-				'type' => 'text',
-				'description' => 'the apis url of fib to generate the qr code',
-				'default' => '',
-				'desc_tip' => true,
-			),
-		);
 	}
 
 	public function process_payment($order_id)

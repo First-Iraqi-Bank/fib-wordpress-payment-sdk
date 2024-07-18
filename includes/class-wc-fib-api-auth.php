@@ -7,19 +7,19 @@ if (!defined('ABSPATH')) {
 class WC_FIB_API_Auth {
 
     public static function get_access_token() {
-        $api_url_auth = get_option('fib_api_url_auth');
+        $fib_base_url = get_option('fib_base_url');
         $client_id = get_option('fib_client_id');
         $client_secret = get_option('fib_client_secret');
 
         // Create a nonce
 		$nonce = wp_create_nonce('wp_rest');
         
-        if (empty($api_url_auth) || empty($client_id) || empty($client_secret)) {
+        if (empty($fib_base_url) || empty($client_id) || empty($client_secret)) {
             wc_add_notice("Please configure your FIB gateway settings and crediantials.", 'error' ); 
             exit;
         }
         try{
-            $response = wp_remote_post($api_url_auth, array(
+            $response = wp_remote_post( $fib_base_url . '/auth/realms/fib-online-shop/protocol/openid-connect/token', array(
                 'headers' => array(
                     'X-WP-Nonce' => $nonce,
                     'Content-Type' => 'application/x-www-form-urlencoded',

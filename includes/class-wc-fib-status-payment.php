@@ -7,8 +7,9 @@ if (!defined('ABSPATH')) {
 class WC_FIB_STATUS_PAYMENT {
 
     public static function payment_status($payment_id, $access_token) {
-        $api_url_payment = get_option('fib_api_url_payment');
-        if (empty($api_url_payment)) {
+        $fib_base_url = get_option('fib_base_url');
+
+        if (empty($fib_base_url)) {
             wc_add_notice('Please configure your FIB settings.', 'error' ); 
             exit;
         }
@@ -19,7 +20,7 @@ class WC_FIB_STATUS_PAYMENT {
         // Create a nonce
 		$nonce = wp_create_nonce('wp_rest');
 
-        $response = wp_remote_get($api_url_payment . '/' . $payment_id . '/status', array(
+        $response = wp_remote_get($fib_base_url . '/protected/v1/payments/' . $payment_id . '/status', array(
             'headers' => array(
                 'X-WP-Nonce' => $nonce,
                 'Content-Type' => 'application/json',

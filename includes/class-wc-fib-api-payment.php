@@ -7,11 +7,12 @@ if (!defined('ABSPATH')) {
 class WC_FIB_API_Payment {
 
     public static function create_qr_code($order, $access_token) {
-        $api_url_payment = get_option('fib_api_url_payment');
+        $fib_base_url = get_option('fib_base_url');
+
         // Create a nonce
 		$nonce = wp_create_nonce('wp_rest');
 
-        if (empty($api_url_payment)) {
+        if (empty($fib_base_url)) {
             wc_add_notice('Please configure your FIB settings.', 'error' ); 
             exit;
         }
@@ -20,7 +21,7 @@ class WC_FIB_API_Payment {
             exit;
         }
 
-        $response = wp_remote_post($api_url_payment, array(
+        $response = wp_remote_post($fib_base_url . '/protected/v1/payments', array(
             'headers' => array(
                 'X-WP-Nonce' => $nonce,
                 'Content-Type' => 'application/json',
