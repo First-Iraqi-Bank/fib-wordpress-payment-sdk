@@ -28,7 +28,7 @@ class WC_FIB_API_Payment {
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $access_token,
             ),
-            'body' => json_encode(array(
+            'body' => wp_json_encode(array(
                 'monetaryValue' => array(
                     'amount' => $order->get_total(),
                     'currency' => 'IQD',
