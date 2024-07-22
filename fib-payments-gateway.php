@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: WooCommerce FIB Payments Gateway
+ * Plugin Name: FIB Payments Gateway
  * Plugin URI: https://github.com/First-Iraqi-Bank/fib-wordpress-payment-sdk
  * Description: Adds the FIB Payments gateway to your WooCommerce website.
  * Version: 1.1.0
@@ -9,7 +9,7 @@
  * Author: First Iraqi Bank
  * Author URI: https://fib.iq/en
  *
- * Text Domain: woocommerce-gateway-fib
+ * Text Domain: fib-payments-gateway
  * Domain Path: /i18n/languages/
  *
  * Requires at least: 4.2
