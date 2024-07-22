@@ -6,7 +6,6 @@ Requires PHP: 8.2
 Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Donate link: https://fib.iq/en
 
 A FIB payment gateway for your WooCommerce development needs, with built-in support for subscriptions and the block-based checkout.
 
