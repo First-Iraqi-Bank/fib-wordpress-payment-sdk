@@ -29,7 +29,7 @@ register_activation_hook(__FILE__, 'fib_payment_activation');
 
 register_deactivation_hook(__FILE__, 'plugin_deactivation');
 
-add_filter('woocommerce_store_api_disable_nonce_check', '__return_true'); // IMPORTANT this is for testing purposes only, it should be removed in production
+// add_filter('woocommerce_store_api_disable_nonce_check', '__return_true'); // IMPORTANT this is for testing purposes only, it should be removed in production
 
 function fib_payment_activation()
 {
