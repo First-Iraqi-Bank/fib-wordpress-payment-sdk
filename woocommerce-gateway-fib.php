@@ -6,8 +6,8 @@
  * Description: Adds the FIB Payments gateway to your WooCommerce website.
  * Version: 1.1.0
  *
- * Author: By Hazhee Himdad
- * Author URI: https://hazhee.com
+ * Author: First Iraqi Bank
+ * Author URI: https://fib.iq/en
  *
  * Text Domain: woocommerce-gateway-fib
  * Domain Path: /i18n/languages/
