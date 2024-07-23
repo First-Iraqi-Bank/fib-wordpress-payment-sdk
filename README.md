@@ -1,5 +1,5 @@
-=== FIB Payments Gateway ===
-Contributors: firstiraqibank
+# FIB Payments Gateway
+- Contributors: firstiraqibank
 Tags: payments, WooCommerce, gateway, FIB
 Requires at least: 4.2
 Tested up to: 6.6
