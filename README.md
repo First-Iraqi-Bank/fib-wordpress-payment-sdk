@@ -13,18 +13,22 @@ A FIB payment gateway for your WooCommerce development needs, with built-in supp
 ## Description
 This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing users to make payments using the First Iraqi Bank's payment system.
 
+
 ## Features
-    – Integrates FIB payment gateway with WooCommerce.
-    – Provides a custom page to display a QR code for payment.
-    – A custom button to regenerate the QR Code.
-    – Automatically checks payment status and updates order status upon payment completion.
-    – Supports WooCommerce Blocks for a seamless checkout experience.
+
+– Integrates FIB payment gateway with WooCommerce.
+– Provides a custom page to display a QR code for payment.
+– A custom button to regenerate the QR Code.
+– Automatically checks payment status and updates order status upon payment completion.
+– Supports WooCommerce Blocks for a seamless checkout experience.
+
 
 ## Requirements
 – WordPress 4.2 or higher.
 – WooCommerce plugin installed and activated.
 – PHP session support enabled on your server.
 – A valid FIB account and API credentials.
+
 
 ## Set Up & Installation
 1. Download the Plugin:
