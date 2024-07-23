@@ -23,17 +23,18 @@ This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing use
 - Supports WooCommerce Blocks for a seamless checkout experience.
 
 
-
 ## Requirements
-– WordPress 4.2 or higher.
-– WooCommerce plugin installed and activated.
-– PHP session support enabled on your server.
-– A valid FIB account and API credentials.
+
+- WordPress 4.2 or higher.
+- WooCommerce plugin installed and activated.
+- PHP session support enabled on your server.
+- A valid FIB account and API credentials.
 
 
 ## Set Up & Installation
+
 1. Download the Plugin:
-    – Download the plugin from the GitHub repository as a ZIP file.
+    - Download the plugin from the GitHub repository as a ZIP file.
 
 2. Install WooCommerce:
     – Ensure the WooCommerce plugin is installed and activated in your WordPress admin panel.
