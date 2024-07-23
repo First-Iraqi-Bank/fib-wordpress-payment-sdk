@@ -16,11 +16,8 @@ This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing use
 
 ## Features
 
-– Integrates FIB payment gateway with WooCommerce.
-– Provides a custom page to display a QR code for payment.
-– A custom button to regenerate the QR Code.
-– Automatically checks payment status and updates order status upon payment completion.
-– Supports WooCommerce Blocks for a seamless checkout experience.
+- Integrates FIB payment gateway with WooCommerce.
+
 
 
 ## Requirements
