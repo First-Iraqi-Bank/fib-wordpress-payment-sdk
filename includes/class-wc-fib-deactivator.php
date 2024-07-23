@@ -15,10 +15,22 @@ class wc_fib_deactivator
     private static function custom_payment_gateway_delete_page()
     {
         $page_title = 'FIB Payment Gateway QR Code';
-        $page_check = get_page_by_title($page_title);
-
-        if (isset($page_check->ID)) {
-            wp_delete_post($page_check->ID, true);
+    
+        $args = array(
+            'title' => $page_title,
+            'post_type' => 'page',
+            'posts_per_page' => 1,
+        );
+    
+        $page_query = new WP_Query($args);
+    
+        if ($page_query->have_posts()) {
+            while ($page_query->have_posts()) {
+                $page_query->the_post();
+                wp_delete_post(get_the_ID(), true);
+            }
         }
+    
+        wp_reset_postdata();
     }
 }

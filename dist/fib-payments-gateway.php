@@ -9,7 +9,7 @@
  * Author: First Iraqi Bank
  * Author URI: https://fib.iq/en
  *
- * Text Domain: fib-payments-gateway
+ * Text Domain: wp-fib-gateway-main
  * Domain Path: /i18n/languages/
  *
  * Requires at least: 4.2

@@ -20,15 +20,9 @@ class wc_fib_activator
         $page_content = '[custom_payment_qr_code]';
         $page_template = '';
 
-        $args = [
-            'title' => $page_title,
-            'post_type' => 'page',
-            'posts_per_page' => 1,
-        ];
+        $page_check = get_page_by_title($page_title);
 
-        $page_query = new WP_Query($args);
-
-        if (!$page_query->have_posts()) {
+        if (!isset($page_check->ID)) {
             $new_page_id = wp_insert_post([
                 'post_title' => $page_title,
                 'post_content' => $page_content,
@@ -39,7 +33,5 @@ class wc_fib_activator
 
             update_option('custom_payment_gateway_page_id', $new_page_id);
         }
-
-        wp_reset_postdata();
     }
 }
