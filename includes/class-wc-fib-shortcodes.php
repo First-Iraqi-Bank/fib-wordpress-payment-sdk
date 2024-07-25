@@ -135,7 +135,10 @@ class WC_FIB_Shortcodes {
     public static function call_back_api_to_regenerate_qr_code($order_id) {
         try {
             $order = wc_get_order($order_id);
+            $payment_id = $_SESSION['payment_id'];
+
 			$access_token = WC_FIB_API_Auth::get_access_token();
+            WC_FIB_API_Payment::cancel_qr_code($payment_id, $access_token);
 			$qr_code = WC_FIB_API_Payment::create_qr_code($order, $access_token);
 			return $qr_code;
 		} catch (Exception $e) {
