@@ -79,12 +79,7 @@ class WC_FIB_API_Payment {
 
         $response_code = wp_remote_retrieve_response_code($response);
 
-        if ($response_code != 200 && $response_code != 201) {
-            wc_add_notice('Something went wrong: ' . wp_remote_retrieve_body($response), 'error');
-            exit;
-        }
-
         unset($_SESSION['payment_id']);
-        return true;
+        return $response_code;
     }
 }
