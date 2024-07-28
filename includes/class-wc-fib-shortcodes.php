@@ -163,14 +163,17 @@ class WC_FIB_Shortcodes
     {
         try {
             $order = wc_get_order($order_id);
-            $access_token = WC_FIB_API_Auth::get_access_token();
-            $qr_code = WC_FIB_API_Payment::create_qr_code($order, $access_token);
-            return $qr_code;
-        } catch (Exception $e) {
-            wc_add_notice($e->getMessage(), 'error');
-            error_log($e->getMessage());
-            return false;
-        }
+            $payment_id = $_SESSION['payment_id'];
+
+			$access_token = WC_FIB_API_Auth::get_access_token();
+            WC_FIB_API_Payment::cancel_qr_code($payment_id, $access_token);
+			$qr_code = WC_FIB_API_Payment::create_qr_code($order, $access_token);
+			return $qr_code;
+		} catch (Exception $e) {
+			wc_add_notice($e->getMessage(), 'error');
+			error_log($e->getMessage());
+			return false;
+		}
     }
 }
 
