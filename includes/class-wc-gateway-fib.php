@@ -80,10 +80,10 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		try {
 			$order = wc_get_order($order_id);
 
-			$order->update_status('pending', __('Awaiting QR code payment', 'woocommerce-gateway-fib'));
+			$order->update_status('pending', 'Awaiting QR code payment', 'woocommerce-gateway-fib');
 
 			wc_reduce_stock_levels($order_id);
-	
+
 			$custom_page_id = get_option('custom_payment_gateway_page_id');
 			$custom_page_url = get_permalink($custom_page_id);
 			$qrCodeUrl = $this->get_fib_customer_url($order);
@@ -93,9 +93,12 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 			$payment_id = $this->get_payment_id_from_api();
 			$_SESSION['payment_id'] = $payment_id;
 
+			$nonce = wp_create_nonce('custom_payment_qr_code_nonce');
+			$redirect_url = add_query_arg(['order_id' => $order_id, 'nonce' => $nonce], $custom_page_url);
+
 			return array(
 				'result'   => 'success',
-				'redirect' => add_query_arg('order_id', $order_id, $custom_page_url),
+				'redirect' => $redirect_url,
 			);
 		} catch (Exception $e) {
 			wc_add_notice($e->getMessage(), 'error');
@@ -126,7 +129,6 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 		if (isset($_SESSION['payment_id'])) {
 			return $_SESSION['payment_id'];
 		}
-
-		throw new Exception(__('Payment ID not found.', 'woocommerce-gateway-fib'));
+		throw new Exception('Payment ID not found.', 'woocommerce-gateway-fib');
 	}
 }

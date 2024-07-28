@@ -18,7 +18,6 @@
 		"start": "wp-scripts start",
 		"build": "wp-scripts build && npm run i18n:build",
 		"i18n": "npm run i18n:build",
-		"i18n:build": "npm run i18n:pot && ./bin/build_i18n.sh",
 		"i18n:pot": "php -d xdebug.max_nesting_level=512 /c:/path/to/wp i18n make-pot --exclude=\"node_modules/,languages/,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://woocommerce.com/my-account/create-a-ticket/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/woocommerce-gateway-fib.pot",
 		"i18n:json": "$(where wp) i18n make-json languages --no-purge",
 		"packages-update": "wp-scripts packages-update",
