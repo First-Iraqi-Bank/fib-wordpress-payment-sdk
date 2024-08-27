@@ -37,6 +37,7 @@ class WC_FIB_API_Payment {
                 'description' => 'Lorem ipsum dolor sit amet.',
             )),
             // 'sslverify' => false, // IMPORTANT: remove this line in production
+            'timeout' => 45,
         ));
 
         $response_code = wp_remote_retrieve_response_code($response);

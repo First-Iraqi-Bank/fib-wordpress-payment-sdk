@@ -27,6 +27,7 @@ class WC_FIB_STATUS_PAYMENT {
                 'Authorization' => 'Bearer ' . $access_token,
             ),
             // 'sslverify' => false, // IMPORTANT: remove this line in production
+            'timeout' => 45,
         ));
 
         $response_code = wp_remote_retrieve_response_code($response);

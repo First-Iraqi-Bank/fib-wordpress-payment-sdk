@@ -67,9 +67,7 @@ class WC_FIB_Shortcodes
                                 $order_id.
                                 '";
                             } else if (!response.success) {
-                                window.location.href = "' .
-                                $redirect_url.
-                                '";
+                                console.error(response.errors);
                             }
 
                         } catch (e) {
@@ -122,6 +120,12 @@ class WC_FIB_Shortcodes
         $order_id = sanitize_text_field($_GET['order_id']);
         
         $access_token = WC_FIB_API_Auth::get_access_token();
+
+        if (empty($payment_id) || empty($order_id) || empty($access_token)) {
+            $errors = wc_get_notices('error');
+            wp_send_json_error(['errors' => $errors]);
+            exit;
+        }
 
         $paymen_status = WC_FIB_STATUS_Payment::payment_status($payment_id, $access_token);
         if ($paymen_status === false) {
