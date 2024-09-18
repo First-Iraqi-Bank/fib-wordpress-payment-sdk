@@ -13,7 +13,6 @@ A FIB payment gateway for your WooCommerce development needs, with built-in supp
 ## Description
 This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing users to make payments using the First Iraqi Bank's payment system.
 
-
 ## Third-Party Services
 
 This plugin relies on the First Iraqi Bank's payment service for processing transactions. The following external endpoints are used:
