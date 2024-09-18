@@ -1,0 +1,22 @@
+.qr-code-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 55vh;
+}
+
+.qr-code-container img {
+    width: 300px;
+    height: 300px;
+}
+
+.qr-code-button {
+    margin-top: 20px;
+    border: none;
+    background: #47B39E;
+    color: white;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
