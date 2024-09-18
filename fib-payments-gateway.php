@@ -57,7 +57,7 @@ add_action('wp_enqueue_scripts', 'fibpg_enqueue_styles');
 function fibpg_enqueue_scripts() {
 
     if (is_user_logged_in()) { // Modify the condition as needed
-        wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . 'assets/js/fib-payments.js', array('jquery'), '1.0.0', true);
+        wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . 'resources/js/frontend/fib-payments.js', array('jquery'), '1.0.0', true);
 
         // Localize the script with the ajaxurl variable
         wp_localize_script('fib-payments-js', 'fibPaymentsData', array(
