@@ -171,10 +171,24 @@ For support, please visit the plugin's GitHub repository issues section.
 
 ## Changelog
 
+**1.2.0**
+* Added new payment status check via AJAX.
+* Refactored JavaScript to use localized variables.
+* Updated function names and classes as per the team request.
+* SANITIZE , VALIDATE, and ESCAPE data.
+* updated the documentation.
+* Added source map.
+* Added more security concerns.
+* Fixed redirect issue.
+
 **1.1.0**
 * Initial release.
 
 ## Upgrade Notice
+
+**1.2.0**
+* Important: The JavaScript file structure was updated. Ensure you clear your browser cache to load the latest version.
+
 **1.1.0**
 * Initial release.
 
