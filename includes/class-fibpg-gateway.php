@@ -1,23 +1,23 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
 require_once 'functions.php';
 // Include the API classes
-require_once 'class-wc-fib-api-auth.php';
-require_once 'class-wc-fib-api-payment.php';
+require_once 'class-fibpg-api-auth.php';
+require_once 'class-fibpg-api-payment.php';
 
-loadEnvironmentVariables(__DIR__ . '/../.env');
-
-// Exit if accessed directly.
-if (!defined('ABSPATH')) {
-	exit;
-}
+fibpg_load_environment_variables(__DIR__ . '/../.env');
 
 /**
  * FIB Gateway.
  *
- * @class    WC_Gateway_FIB
+ * @class    FIBPG_Gateway
  * @version  1.0.7
  */
-class WC_Gateway_FIB extends WC_Payment_Gateway
+class FIBPG_Gateway extends WC_Payment_Gateway
 {
 
 	/**
@@ -46,9 +46,6 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 */
 	public function __construct()
 	{
-
-		$_SESSION['user'] = 'hey';
-
 		$this->has_fields = false;
 		$this->supports = array(
 			'pre-orders',
@@ -86,7 +83,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 			$custom_page_id = get_option('fibpg_payment_gateway_page_id');
 			$custom_page_url = get_permalink($custom_page_id);
-			$qrCodeUrl = $this->get_fib_customer_url($order);
+			$qrCodeUrl = $this->get_fibpg_customer_url($order);
 
 			$_SESSION['qr_data'] = $qrCodeUrl;
 
@@ -98,7 +95,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 			return array(
 				'result'   => 'success',
-				'redirect' => $redirect_url,
+                'redirect' => esc_url_raw($redirect_url), // Escaping output
 			);
 		} catch (Exception $e) {
 			wc_add_notice($e->getMessage(), 'error');
@@ -111,11 +108,11 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	 * @param  WC_Order  $order
 	 * @return string
 	 */
-	public function get_fib_customer_url($order)
+	public function get_fibpg_customer_url($order)
 	{
 		try {
-			$access_token = WC_FIB_API_Auth::get_access_token();
-			$qr_code = WC_FIB_API_Payment::create_qr_code($order, $access_token);
+			$access_token = FIBPG_API_Auth::get_access_token();
+			$qr_code = FIBPG_API_Payment::create_qr_code($order, $access_token);
 			return $qr_code;
 		} catch (Exception $e) {
 			wc_add_notice($e->getMessage(), 'error');
@@ -127,7 +124,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 	public function get_payment_id_from_api()
 	{
 		if (isset($_SESSION['payment_id'])) {
-			return $_SESSION['payment_id'];
+			return isset($_SESSION['payment_id']) ? sanitize_text_field($_SESSION['payment_id']) : '';
 		}
 		throw new Exception('Payment ID not found.', 'woocommerce-gateway-fib');
 	}

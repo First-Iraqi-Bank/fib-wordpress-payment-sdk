@@ -1,6 +1,6 @@
 <?php
 
-function loadEnvironmentVariables($filePath)
+function fibpg_load_environment_variables($filePath)
 {
     if (!file_exists($filePath)) {
         return;

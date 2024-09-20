@@ -6,8 +6,8 @@
  * Description: Adds the FIB Payments gateway to your WooCommerce website.
  * Version: 1.1.0
  *
- * Author: First Iraqi Bank
- * Author URI: https://fib.iq/en
+ * Author: Gateway ICT Solutions
+ * Author URI: https://www.the-gw.com/
  *
  * Text Domain: fib-payments-gateway
  * Domain Path: /i18n/languages/
@@ -25,45 +25,62 @@ if (!defined('ABSPATH')) {
     exit();
 }
 
-register_activation_hook(__FILE__, 'fib_payment_activation');
+register_activation_hook(__FILE__, 'fibpg_payment_activation');
 
-register_deactivation_hook(__FILE__, 'plugin_deactivation');
+register_deactivation_hook(__FILE__, 'fibpg_deactivation');
 
+require_once plugin_dir_path(__FILE__) . 'includes/class-fibpg-activator.php';
+require_once plugin_dir_path(__FILE__) . 'includes/class-fibpg-deactivator.php';
+require_once plugin_dir_path(__FILE__) . 'includes/class-fibpg-shortcodes.php';
+require_once plugin_dir_path(__FILE__) . 'includes/class-fibpg-payment-settings.php';
 // add_filter('woocommerce_store_api_disable_nonce_check', '__return_true'); // IMPORTANT this is for testing purposes only, it should be removed in production
 
-function fib_payment_activation()
+function fibpg_payment_activation()
 {
-	require_once plugin_dir_path(__FILE__) . 'includes/class-wc-fib-activator.php';
-	wc_fib_activator::activate();
+	FIBPG_Activator::activate();
 }
 
-function plugin_deactivation()
+function fibpg_deactivation()
 {
-	require_once plugin_dir_path(__FILE__) . 'includes/class-wc-fib-deactivator.php';
-	wc_fib_deactivator::deactivate();
+	FIBPG_Deactivator::deactivate();
 }
-
-// Include the shortcodes class file for the QR code
-require_once plugin_dir_path(__FILE__) . 'includes/class-wc-fib-shortcodes.php';
 
 // Initialize the shortcodes
-WC_FIB_Shortcodes::init();
+FIBPG_Shortcodes::init();
 
-// Include the settings class
-require_once plugin_dir_path(__FILE__) . 'includes/class-fib-payment-settings.php';
+function fibpg_enqueue_styles() {
+    // Enqueue your CSS file
+    wp_enqueue_style('fib-payments-css', plugin_dir_url(__FILE__) . 'assets/css/fib-payments.css', array(), '1.0.0');
+}
+add_action('wp_enqueue_scripts', 'fibpg_enqueue_styles');
+
+function fibpg_enqueue_scripts() {
+
+    if (is_user_logged_in()) { // Modify the condition as needed
+        wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . 'resources/js/frontend/fib-payments.js', array('jquery'), '1.0.0', true);
+
+        // Localize the script with the ajaxurl variable
+        wp_localize_script('fib-payments-js', 'fibPaymentsData', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'fibpg_enqueue_scripts');
+
+
+
+
 
 if (is_admin()) {
-    add_action('admin_notices', function() {
-        settings_errors();
-    });
+    add_action('admin_notices', 'settings_errors');
 }
 
 /**
  * WC FIB Payment gateway plugin class.
  *
- * @class WC_FIB_Payments
+ * @class FIBPG_Payments
  */
-class WC_FIB_Payments
+class FIBPG_Payments
 {
     /**
      * Plugin bootstrapping.
@@ -76,29 +93,25 @@ class WC_FIB_Payments
         // Make the FIB Payments gateway available to WC.
         add_filter('woocommerce_payment_gateways', [__CLASS__, 'add_gateway']);
 
-        add_filter('woocommerce_payment_process', [__CLASS__, 'add_gateway']);
-
         // Registers WooCommerce Blocks integration.
         add_action('woocommerce_blocks_loaded', [__CLASS__, 'woocommerce_gateway_fib_woocommerce_block_support']);
     }
 
     /**
      * Add the FIB Payment gateway to the list of available gateways.
-     *
+     * @param array $gateways
      * @param array
      */
     public static function add_gateway($gateways)
     {
-        $options = get_option('woocommerce_fib_settings', []);
-
+        $options = get_option('woocommerce_fibpg_settings', []);
         if (isset($options['hide_for_non_admin_users'])) {
             $hide_for_non_admin_users = $options['hide_for_non_admin_users'];
         } else {
             $hide_for_non_admin_users = 'no';
         }
-
         if (('yes' === $hide_for_non_admin_users && current_user_can('manage_options')) || 'no' === $hide_for_non_admin_users) {
-            $gateways[] = 'WC_Gateway_FIB';
+            $gateways[] = 'FIBPG_Gateway';
         }
         return $gateways;
     }
@@ -108,9 +121,9 @@ class WC_FIB_Payments
      */
     public static function includes()
     {
-        // Make the WC_Gateway_FIB class available.
+        // Make the FIBPG_Gateway class available.
         if (class_exists('WC_Payment_Gateway')) {
-            require_once 'includes/class-wc-gateway-fib.php';
+            require_once 'includes/class-fibpg-gateway.php';
         }
     }
 
@@ -133,6 +146,7 @@ class WC_FIB_Payments
     {
         return trailingslashit(plugin_dir_path(__FILE__));
     }
+    
 
     /**
      * Registers WooCommerce Blocks integration.
@@ -141,12 +155,12 @@ class WC_FIB_Payments
     public static function woocommerce_gateway_fib_woocommerce_block_support()
     {
         if (class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
-            require_once 'includes/blocks/class-wc-fib-payments-blocks.php';
+            require_once 'includes/blocks/class-fibpg-payments-blocks.php';
             add_action('woocommerce_blocks_payment_method_type_registration', function (Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
-                $payment_method_registry->register(new WC_Gateway_FIB_Blocks_Support());
+                $payment_method_registry->register(new Gateway_FIBPG_Blocks_Support());
             });
         }
     }
 }
 
-WC_FIB_Payments::init();
+FIBPG_Payments::init();

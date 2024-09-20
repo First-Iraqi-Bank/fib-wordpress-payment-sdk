@@ -34,6 +34,7 @@ module.exports = {
 		path: path.resolve( __dirname, 'assets/js' ),
 		filename: '[name].js',
 	},
+	devtool: 'source-map',
 	plugins: [
 		...defaultConfig.plugins.filter(
 			(plugin) =>
