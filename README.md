@@ -1,5 +1,5 @@
 # FIB Payments Gateway
-- Contributors: firstiraqibank
+- Contributors: Gateway ICT Solutions
 - Tags: payments, WooCommerce, gateway, FIB
 - Requires at least: 4.2
 - Tested up to: 6.6
@@ -12,6 +12,24 @@ A FIB payment gateway for your WooCommerce development needs, with built-in supp
 
 ## Description
 This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing users to make payments using the First Iraqi Bank's payment system.
+
+## Third-Party Services
+
+This plugin relies on the First Iraqi Bank's payment service for processing transactions. The following external endpoints are used:
+
+- **Create Payment**: ` https://fib.stage.fib.iq/protected/v1/payments`
+- **Cancel Payment**: `https://fib.stage.fib.iq/protected/v1/payments/4d6f7625-60f7-48e3-82e3-b4592a4eb993/cancel`
+- **Check Payment Status**: `https://fib.stage.fib.iq/protected/v1/payments/{paymentid}/status`
+
+### Third-Party Service Information
+
+- **Service Provider**: [First Iraqi Bank](https://fib.iq/) 
+- **Service Terms of Use**: [Terms of Use](https://fib.iq/integrations/web-payments/)
+- **Service Privacy Policy**: [Privacy Policy](https://fib.iq/privacy-and-security/)
+
+The plugin sends payment data to the First Iraqi Bank’s API endpoints for the purposes of creating payments, checking payment statuses, and canceling payments. 
+
+Please review the service provider's terms and privacy policy to understand how your data is handled and ensure you are compliant with their requirements.
 
 
 ## Features
@@ -53,10 +71,59 @@ This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing use
         - Client ID: Your FIB payment API key.
         - Client Secret: Your FIB payment API secret.
 
+## Development
+
+The uncompiled source code is located in the `resources/js/frontend` directory. It includes: JavaScript files: `index.js`.
+
+- Install [Node.js](https://nodejs.org/) if you don't already have it.
+- Navigate to the plugin directory.
+- Run `npm install` to install the necessary build tools.
+- Modify the unminified source files located in `assets/`.
+- Use `npm run build` to compile the minified versions of the files.
+
+# `blocks.js` Overview
+
+This file contains JavaScript code for custom blocks used in the WordPress plugin.
+
+## Dependencies
+- React
+- `@woocommerce/blocks-registry`
+
+## Components
+
+### `CustomLabelComponent`
+- **Props**: 
+  - `text`: The text to display.
+  - `iconSrc`: URL of the icon to display.
+- **Description**: Renders a label with text and an icon.
+
+### `Content`
+- **Description**: Renders the text "Pay with FIB".
+
+### Payment Method Registration
+- **Function**: `registerPaymentMethod`
+- **Parameters**:
+  - `name`: Identifier for the payment method.
+  - `label`: Component used to display the label.
+  - `content`: Component used to display the content.
+  - `edit`: Component used to edit the payment method.
+  - `canMakePayment`: Function to check if the payment method can be used.
+  - `ariaLabel`: Accessibility label.
+  - `supports`: Features supported by the payment method.
+
+## Source Map
+- **File**: `blocks.js.map`
+- **Purpose**: Maps minified code back to original source code for debugging.
+- **Usage**: Use in browser developer tools to view original source code.
+
+## Webpack Configuration and Build Tools
+- This plugin uses Webpack to bundle and minify JavaScript and CSS. To build the plugin from source. 
+
+
 ## Usage
 After installation and activation, the FIB Payments gateway will be available as a payment method in WooCommerce. You can enable it from `WooCommerce > Settings > Payments`.
 
-To display a QR code for payment, use the shortcode `[custom_payment_qr_code]` in your posts or pages. This shortcode dynamically generates a QR code based on the order details and allows users to scan and make payments.
+To display a QR code for payment, use the shortcode `[fibpg_custom_payment_qr_code]` in your posts or pages. This shortcode dynamically generates a QR code based on the order details and allows users to scan and make payments.
 
 ## Configuration
 
@@ -90,10 +157,10 @@ The plugin provides several hooks and filters allowing developers to extend its 
 This plugin is licensed under the GNU General Public License v2.0 or later.
 
 ## Author
-First Iraqi Bank
+Gateway ICT Solutions
 
-## Plugin URI
-[GitHub Repository](https://github.com/First-Iraqi-Bank/fib-wordpress-payment-sdk)
+## Source Code
+The source code for this plugin is available at [GitHub Repository](https://github.com/First-Iraqi-Bank/fib-wordpress-payment-sdk)
 
 ## Support
 For support, please visit the plugin's GitHub repository issues section.
