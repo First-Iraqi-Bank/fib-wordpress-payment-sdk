@@ -84,7 +84,7 @@ class WC_Gateway_FIB extends WC_Payment_Gateway
 
 			wc_reduce_stock_levels($order_id);
 
-			$custom_page_id = get_option('custom_payment_gateway_page_id');
+			$custom_page_id = get_option('fibpg_payment_gateway_page_id');
 			$custom_page_url = get_permalink($custom_page_id);
 			$qrCodeUrl = $this->get_fib_customer_url($order);
 

@@ -17,7 +17,7 @@ class FIBPG_Activator
     private static function fipg_payment_gateway_create_page()
     {
         $page_title = 'FIB Payment Gateway QR Code';
-        $page_content = '[fibpg_custom_payment_qr_code]'; // Updated shortcode to use the fibpg prefix
+        $page_content = '[fibpg_custom_payment_qr_code]';
         $page_template = '';
 
         $args = [
