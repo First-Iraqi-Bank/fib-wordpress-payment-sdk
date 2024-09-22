@@ -1,10 +1,10 @@
 # FIB Payments Gateway
-- Contributors: Gateway ICT Solutions
+- Contributors: GatewayICTSolutions
 - Tags: payments, WooCommerce, gateway, FIB
 - Requires at least: 4.2
 - Tested up to: 6.6
 - Requires PHP: 7.2
-- Stable tag: 1.2.0
+- Stable tag: 1.2.1
 - License: GNU General Public License v3.0
 - License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -170,6 +170,13 @@ For support, please visit the plugin's GitHub repository issues section.
  - You can obtain FIB API credentials by contacting First Iraqi Bank support team at support@fib-payment.com.
 
 ## Changelog
+
+**1.2.1**
+* Fixed bugs related to payment status checks.
+* Improved error handling and logging.
+* Enhanced security measures for API credentials.
+* Updated documentation for clarity and accuracy.
+* Minor performance optimizations.
 
 **1.2.0**
 * Added new payment status check via AJAX.

@@ -13,8 +13,8 @@ class FIBPG_Payment_Settings {
 
     public static function add_menu() {
         add_menu_page(
-            esc_html__('FIB Payment Gateway Settings', 'fibpg-payment'),
-            esc_html__('FIB Payment Gateway', 'fibpg-payment'),
+            esc_html__('FIB Payment Gateway Settings', 'fib-payments-gateway'),
+            esc_html__('FIB Payment Gateway', 'fib-payments-gateway'),
             'manage_options',
             'fibpg-payment-gateway',
             [__CLASS__, 'settings_page'],
@@ -25,7 +25,7 @@ class FIBPG_Payment_Settings {
     public static function settings_page() {
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('FIB Payment Gateway Settings', 'fibpg-payment'); ?></h1>
+            <h1><?php esc_html_e('FIB Payment Gateway Settings', 'fib-payments-gateway'); ?></h1>
             <form method="post" action="options.php">
                 <?php
                 settings_fields('fibpg_payment_gateway_settings_group');
@@ -44,14 +44,14 @@ class FIBPG_Payment_Settings {
 
         add_settings_section(
             'fibpg_payment_gateway_settings_section',
-            esc_html__('API Settings', 'fibpg-payment'),
+            esc_html__('API Settings', 'fib-payments-gateway'),
             [__CLASS__, 'settings_section_callback'],
             'fibpg-payment-gateway'
         );
 
         add_settings_field(
             'fibpg_base_url',
-            esc_html__('FIB Base URL', 'fibpg-payment'),
+            esc_html__('FIB Base URL', 'fib-payments-gateway'),
             [__CLASS__, 'api_url_auth_callback'],
             'fibpg-payment-gateway',
             'fibpg_payment_gateway_settings_section'
@@ -59,7 +59,7 @@ class FIBPG_Payment_Settings {
 
         add_settings_field(
             'fibpg_client_id',
-            esc_html__('Client ID', 'fibpg-payment'),
+            esc_html__('Client ID', 'fib-payments-gateway'),
             [__CLASS__, 'client_id_callback'],
             'fibpg-payment-gateway',
             'fibpg_payment_gateway_settings_section'
@@ -67,7 +67,7 @@ class FIBPG_Payment_Settings {
 
         add_settings_field(
             'fibpg_client_secret',
-            esc_html__('Client Secret', 'fibpg-payment'),
+            esc_html__('Client Secret', 'fib-payments-gateway'),
             [__CLASS__, 'client_secret_callback'],
             'fibpg-payment-gateway',
             'fibpg_payment_gateway_settings_section'
@@ -75,7 +75,7 @@ class FIBPG_Payment_Settings {
     }
 
     public static function settings_section_callback() {
-        esc_html_e('Enter the FIB API settings below:', 'fibpg-payment');
+        esc_html_e('Enter the FIB API settings below:', 'fib-payments-gateway');
     }
 
     public static function api_url_auth_callback() {
@@ -98,7 +98,7 @@ class FIBPG_Payment_Settings {
             add_settings_error(
                 'fibpg_base_url',
                 'invalid-url',
-                esc_html__('Please enter a valid API Endpoint URL.', 'fibpg-payment'),
+                esc_html__('Please enter a valid API Endpoint URL.', 'fib-payments-gateway'),
                 'error'
             );
             return get_option('fibpg_base_url');
@@ -111,7 +111,7 @@ class FIBPG_Payment_Settings {
             add_settings_error(
                 'fibpg_client_id',
                 'invalid-client-id',
-                esc_html__('Please enter a valid API Client ID.', 'fibpg-payment'),
+                esc_html__('Please enter a valid API Client ID.', 'fib-payments-gateway'),
                 'error'
             );
             return get_option('fibpg_client_id');
@@ -124,7 +124,7 @@ class FIBPG_Payment_Settings {
             add_settings_error(
                 'fibpg_client_secret',
                 'invalid-client-secret',
-                esc_html__('Please enter a valid API Client Secret.', 'fibpg-payment'),
+                esc_html__('Please enter a valid API Client Secret.', 'fib-payments-gateway'),
                 'error'
             );
             return get_option('fibpg_client_secret');

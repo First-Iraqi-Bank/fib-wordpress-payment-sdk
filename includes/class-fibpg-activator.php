@@ -16,28 +16,28 @@ class FIBPG_Activator
 
     private static function fipg_payment_gateway_create_page()
     {
-        $page_title = 'FIB Payment Gateway QR Code';
-        $page_content = '[fibpg_custom_payment_qr_code]';
-        $page_template = '';
+        $fibpg_page_title = __('FIB Payment Gateway QR Code', 'fib-payments-gateway');
+        $fibpg_page_content = '[fibpg_payment_qr_code]';
+        $fibpg_page_template = '';
 
         $args = [
-            'title' => $page_title,
+            'title' => $fibpg_page_title,
             'post_type' => 'page',
             'posts_per_page' => 1,
         ];
 
-        $page_query = new WP_Query($args);
+        $fibpg_page_query = new WP_Query($args);
 
-        if (!$page_query->have_posts()) {
-            $new_page_id = wp_insert_post([
-                'post_title' => $page_title,
-                'post_content' => $page_content,
+        if (!$fibpg_page_query->have_posts()) {
+            $fibpg_new_page_id = wp_insert_post([
+                'post_title' => $fibpg_page_title,
+                'post_content' => $fibpg_page_content,
                 'post_status' => 'private',
                 'post_type' => 'page',
-                'page_template' => $page_template,
+                'page_template' => $fibpg_page_template,
             ]);
 
-            update_option('fibpg_payment_gateway_page_id', $new_page_id);
+            update_option('fibpg_payment_gateway_page_id', $fibpg_new_page_id);
         }
 
         wp_reset_postdata();
