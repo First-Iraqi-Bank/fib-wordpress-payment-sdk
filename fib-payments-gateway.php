@@ -4,7 +4,7 @@
  * Plugin Name: FIB Payments Gateway
  * Plugin URI: https://github.com/First-Iraqi-Bank
  * Description: Adds the FIB Payments gateway to your WooCommerce website.
- * Version: 1.2.1
+ * Version: 1.2.2
  *
  * Author: Gateway ICT Solutions
  * Author URI: https://www.the-gw.com/
@@ -47,25 +47,6 @@ function fibpg_deactivation()
 
 // Initialize the shortcodes
 FIBPG_Shortcodes::init();
-
-function fibpg_enqueue_styles() {
-    // Enqueue your CSS file
-    wp_enqueue_style('fib-payments-css', plugin_dir_url(__FILE__) . 'assets/css/fib-payments.css', array(), '1.0.0');
-}
-add_action('wp_enqueue_scripts', 'fibpg_enqueue_styles');
-
-function fibpg_enqueue_scripts() {
-
-    if (is_user_logged_in()) { // Modify the condition as needed
-        wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . 'resources/js/frontend/fib-payments.js', array('jquery'), '1.0.0', true);
-
-        // Localize the script with the ajaxurl variable
-        wp_localize_script('fib-payments-js', 'fibPaymentsData', array(
-            'ajaxurl' => admin_url('admin-ajax.php'),
-        ));
-    }
-}
-add_action('wp_enqueue_scripts', 'fibpg_enqueue_scripts');
 
 
 if (is_admin()) {
@@ -152,7 +133,7 @@ class FIBPG_Payments
         if (class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
             require_once 'includes/blocks/class-fibpg-payments-blocks.php';
             add_action('woocommerce_blocks_payment_method_type_registration', function (Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
-                $payment_method_registry->register(new Gateway_FIBPG_Blocks_Support());
+                $payment_method_registry->register(new FIBPG_Gateway_Blocks_Support());
             });
         }
     }

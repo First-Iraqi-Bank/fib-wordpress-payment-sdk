@@ -21,11 +21,11 @@ class FIBPG_API_Payment
 
         if (empty($fibpg_base_url)) {
             wc_add_notice(esc_html__('Please configure your FIB settings.', 'fib-payments-gateway'), 'error');
-            exit();
+            return;
         }
         if (empty($access_token)) {
             wc_add_notice(esc_html__('Unauthorized or expired token.', 'fib-payments-gateway'), 'error');
-            exit();
+            return;
         }
 
         $response = wp_remote_post(esc_url_raw($fibpg_base_url . '/protected/v1/payments'), [
@@ -41,7 +41,7 @@ class FIBPG_API_Payment
                 ],
                 'statusCallbackUrl' => esc_url_raw('https://URL_TO_UPDATE_YOUR_PAYMENT_STATUS'),
                 'description' => sanitize_text_field(sprintf(
-                    /* translators: %s: Order ID */
+                    // translators: %s: order ID
                     __('FIB Payment for Order #%s', 'fib-payments-gateway'), 
                     $order->get_id()
                 )),            ]),
@@ -55,7 +55,7 @@ class FIBPG_API_Payment
 
         if ($response_code != 200 && $response_code != 201) {
             wc_add_notice(esc_html__('Something went wrong!', 'fib-payments-gateway'), 'error');
-            exit();
+            return;
         }
         $_SESSION['payment_id'] = sanitize_text_field($response_data['paymentId']);
         return filter_var($response_data['qrCode'], FILTER_SANITIZE_URL);
@@ -77,16 +77,19 @@ class FIBPG_API_Payment
         $nonce = wp_create_nonce('wp_rest');
 
         if (empty($fibpg_base_url)) {
+            // translators: %s: configuration message
             wc_add_notice(esc_html__('Please configure your FIB settings.', 'fib-payments-gateway'), 'error');
-            exit();
+            return;
         }
         if (empty($access_token)) {
+            // translators: %s: authorization message
             wc_add_notice(esc_html__('Unauthorized or expired token.', 'fib-payments-gateway'), 'error');
-            exit();
+            return;
         }
         if (empty($payment_id)) {
+            // translators: %s: payment ID message
             wc_add_notice(esc_html__('Payment ID is not provided.', 'fib-payments-gateway'), 'error');
-            exit();
+            return;
         }
 
         $response = wp_remote_post(esc_url_raw($fibpg_base_url . '/protected/v1/payments/') . $fibpg_payment_id . '/cancel', [

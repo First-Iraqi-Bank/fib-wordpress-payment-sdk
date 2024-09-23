@@ -6,7 +6,8 @@
                 data: {
                     action: "check_payment_status",
                     payment_id: $("#payment-id").val(),
-                    order_id: $("#order-id").val()
+                    order_id: $("#order-id").val(),
+                    nonce: $("#nonce").val()
                 },
                 success: function(response) {
                     try {
@@ -31,7 +32,9 @@
                 url: fibPaymentsData.ajaxurl, // Use the localized variable
                 data: {
                     action: "regenerate_qr_code",
-                    order_id: $("#order-id").val()
+                    order_id: $("#order-id").val(),
+                    nonce: $("#nonce").val() // Include the nonce here if needed
+
                 },
                 success: function(response) {
                     if (response.success) {

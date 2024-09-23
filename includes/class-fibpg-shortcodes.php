@@ -18,6 +18,26 @@ class FIBPG_Shortcodes
         add_action('wp_ajax_nopriv_check_payment_status', [__CLASS__, 'fibpg_check_payment_status']); // for non-authenticated users
         add_action('wp_ajax_regenerate_qr_code', [__CLASS__, 'fibpg_regenerate_qr_code']);
         add_action('wp_ajax_nopriv_regenerate_qr_code', [__CLASS__, 'fibpg_regenerate_qr_code']);
+
+        // Enqueue styles and scripts conditionally
+        add_action('wp_enqueue_scripts', [__CLASS__, 'fibpg_enqueue_styles_and_scripts']);
+    }
+
+    public static function fibpg_enqueue_styles_and_scripts()
+    {
+        // Check if the shortcode is present on the current page
+        if (has_shortcode(get_post()->post_content, 'fibpg_payment_qr_code')) {
+            // Enqueue CSS file
+            wp_enqueue_style('fib-payments-css', plugin_dir_url(__FILE__) . '../assets/css/fib-payments.css', array(), '1.0.0');
+
+            // Enqueue JavaScript file for logged-in users
+            if (is_user_logged_in()) {
+                wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . '../resources/js/frontend/fib-payments.js', array('jquery'), '1.0.0', true);
+                wp_localize_script('fib-payments-js', 'fibPaymentsData', array(
+                    'ajaxurl' => admin_url('admin-ajax.php'),
+                ));
+            }
+        }
     }
 
     public static function fibpg_payment_qr_code_shortcode()
@@ -48,12 +68,14 @@ class FIBPG_Shortcodes
                     <button id="regenerate-qr-code" class="qr-code-button">' . esc_html__('Regenerate QR Code', 'fib-payments-gateway') . '</button>
                     <input type="hidden" id="payment-id" value="' . esc_attr($fibpg_payment_id) . '">
                     <input type="hidden" id="order-id" value="' . esc_attr($order_id) . '">
+                    <input type="hidden" id="nonce" value="' . esc_attr($fibpg_nonce) . '">
                     </div>';
                 } else {
                     return '<p style="text-align: center;">' . esc_html__('QR code not available.', 'fib-payments-gateway') . '</p>';
                 }
             }
         }
+        // translators: %s: order ID
         return esc_html__('Order not found.', 'fib-payments-gateway');
     }
     
@@ -61,12 +83,13 @@ class FIBPG_Shortcodes
     public static function fibpg_check_payment_status()
     {
         session_start();
-        if (!isset($_GET['nonce']) || !wp_verify_nonce(sanitize_text_field($_GET['nonce']), 'custom_payment_qr_code_nonce')) {
+        $nonce = isset($_GET['nonce']) ? wp_unslash($_GET['nonce']) : '';
+        // translators: %s: order ID
+        if (!wp_verify_nonce(sanitize_text_field($nonce), 'custom_payment_qr_code_nonce')) {
             wp_die(esc_html__('Invalid nonce', 'fib-payments-gateway'));
-            exit;
         }
         $fibpg_payment_id = isset($_SESSION['payment_id']) ? sanitize_text_field($_SESSION['payment_id']) : '';
-        $fibpg_order_id = isset($_GET['order_id']) ? sanitize_text_field($_GET['order_id']) : '';
+        $fibpg_order_id = isset($_GET['order_id']) ? sanitize_text_field(wp_unslash($_GET['order_id'])) : '';
         
         $fibpg_access_token = FIBPG_API_Auth::get_access_token();
 
@@ -98,8 +121,9 @@ class FIBPG_Shortcodes
     public static function fibpg_regenerate_qr_code()
     {
         session_start();
-        // Validate and sanitize nonce
-        if (!isset($_GET['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['nonce'])), 'custom_payment_qr_code_nonce')) {
+        // translators: %s: order ID
+        $nonce = isset($_GET['nonce']) ? wp_unslash($_GET['nonce']) : '';
+        if (!wp_verify_nonce(sanitize_text_field($nonce), 'custom_payment_qr_code_nonce')) {
             wp_die(esc_html__('Invalid nonce', 'fib-payments-gateway'));
         }
         $fibpg_order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
@@ -109,6 +133,7 @@ class FIBPG_Shortcodes
                 $sanitized_qr_code_url = sanitize_text_field($fibpg_new_qr_code_url);
                 wp_send_json_success(['qr_code_url' => filter_var($sanitized_qr_code_url, FILTER_SANITIZE_URL)]);
             } else {
+                // translators: %s: error message
                 wp_send_json_error(['message' => esc_html__('Failed to regenerate QR code.', 'fib-payments-gateway')]);
             }
         } else {
@@ -128,6 +153,7 @@ class FIBPG_Shortcodes
             }
             $cancel_response_code = FIBPG_API_Payment::cancel_qr_code($fibpg_payment_id, $fibpg_access_token);
             if ($cancel_response_code != 204 && $cancel_response_code != 201) {
+                // translators: %s: response code
                 throw new Exception(sprintf(esc_html__('Failed to cancel previous QR code. Response code: %d', 'fib-payments-gateway'), $cancel_response_code));
             }
             $fibpg_qr_code = FIBPG_API_Payment::create_qr_code($fibpg_order, $fibpg_access_token);
@@ -135,8 +161,8 @@ class FIBPG_Shortcodes
 
             return $sanitized_qr_code;
 		} catch (Exception $e) {
-			wc_add_notice($e->getMessage(), 'error');
-			error_log($e->getMessage());
+            wc_add_notice(esc_html__('An error occurred while processing your request. Please try again later.', 'fib-payments-gateway'), 'error');
+            error_log(sprintf('FIBPG Error: %s', $e->getMessage()));
 			return false;
 		}
     }
