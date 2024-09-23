@@ -59,7 +59,7 @@ class FIBPG_API_Auth {
 
             if ($response_code != 200 && $response_code != 201) {
                 $error_message = isset($response_data['error_description']) ? $response_data['error_description'] : __('Unknown error occurred.', 'fib-payments-gateway');
-                wc_add_notice($error_message, 'error');
+                wc_add_notice(esc_html($error_message), 'error');
                 error_log('API error: ' . esc_html($response_body));
                 return;
             }
@@ -78,7 +78,7 @@ class FIBPG_API_Auth {
                 esc_html__('An error occurred: ', 'fib-payments-gateway') . esc_html($e->getMessage()),
                 'error'
             );
-            error_log($e->getMessage());
+            error_log('Exception occurred: ' . esc_html($e->getMessage()));
         }
 
     }

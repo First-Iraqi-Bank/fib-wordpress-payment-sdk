@@ -4,7 +4,7 @@
 - Requires at least: 4.2
 - Tested up to: 6.6
 - Requires PHP: 7.2
-- Stable tag: 1.2.1
+- Stable tag: 1.2.2
 - License: GNU General Public License v3.0
 - License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -170,6 +170,13 @@ For support, please visit the plugin's GitHub repository issues section.
  - You can obtain FIB API credentials by contacting First Iraqi Bank support team at support@fib-payment.com.
 
 ## Changelog
+
+**1.2.2**
+* Added new payment error handling.
+* Improved nonce security for API requests.
+* Fixed potential XSS vulnerabilities.
+* Enhanced logging for API responses.
+* Updated documentation with clearer instructions.
 
 **1.2.1**
 * Fixed bugs related to payment status checks.

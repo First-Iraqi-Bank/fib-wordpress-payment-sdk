@@ -59,8 +59,8 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 			'multiple_subscriptions'
 		);
 
-		$this->method_title = _x('FIB Payment', 'FIB payment method', 'fib-payments-gateway');
-		$this->method_description = __('Allows fib payments.', 'fib-payments-gateway');
+		$this->method_title = esc_html_x('FIB Payment', 'FIB payment method', 'fib-payments-gateway');
+		$this->method_description = esc_html__('Allows fib payments.', 'fib-payments-gateway');
 
 		// Load the settings.
 		$this->init_settings();
@@ -78,7 +78,7 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 		try {
 			$fibpg_order = wc_get_order($order_id);
 
-			$fibpg_order->update_status('pending', __('Awaiting QR code payment', 'fib-payments-gateway'), 'woocommerce-gateway-fib');
+			$fibpg_order->update_status('pending', esc_html__('Awaiting QR code payment', 'fib-payments-gateway'));
 
 			wc_reduce_stock_levels($order_id);
 
@@ -100,7 +100,7 @@ class FIBPG_Gateway extends WC_Payment_Gateway
                 'redirect' => esc_url_raw($fibpg_redirect_url), // Escaping output
 			);
 		} catch (Exception $e) {
-			wc_add_notice($e->getMessage(), 'error');
+			wc_add_notice(esc_html($e->getMessage()), 'error'); // Escape error message
 		}
 	}
 	
@@ -118,8 +118,7 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 			return FIBPG_API_Payment::create_qr_code($order, $fibpg_access_token);
 			
 		} catch (Exception $e) {
-			wc_add_notice($e->getMessage(), 'error');
-			error_log($e->getMessage());
+			wc_add_notice(esc_html($e->getMessage()), 'error');
 			return false;
 		}
 	}
@@ -135,6 +134,6 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 		if (isset($_SESSION['payment_id'])) {
             return sanitize_text_field($_SESSION['payment_id']);
 		}
-		throw new Exception(__('Payment ID not found.', 'fib-payments-gateway'), 'woocommerce-gateway-fib');
+		throw new Exception(esc_html__('Payment ID not found.', 'fib-payments-gateway')); // Escape the message
 	}
 }

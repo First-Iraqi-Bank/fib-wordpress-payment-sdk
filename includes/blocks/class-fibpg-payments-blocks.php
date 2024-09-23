@@ -9,7 +9,7 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
  */
 
  
-final class Gateway_FIBPG_Blocks_Support extends AbstractPaymentMethodType
+final class FIBPG_Gateway_Blocks_Support extends AbstractPaymentMethodType
 {
 
 	/**
@@ -35,14 +35,14 @@ final class Gateway_FIBPG_Blocks_Support extends AbstractPaymentMethodType
 
 		// Error handling for missing settings
 		if (empty($this->settings)) {
-            return new WP_Error('missing_settings', __('FIB Payments settings are not configured properly.', 'woocommerce-gateway-fib'));
+            return new WP_Error('missing_settings', esc_html__('FIB Payments settings are not configured properly.', 'fib-payments-gateway'));
         }
 
 		$gateways = WC()->payment_gateways->payment_gateways();
 
 		// Error handling for missing gateway
         if (!isset($gateways[$this->name])) {
-            return new WP_Error('gateway_missing', __('FIB Gateway is not available', 'woocommerce-gateway-fib'));
+            return new WP_Error('gateway_missing', esc_html__('FIB Gateway is not available', 'fib-payments-gateway'));
         }
 
 		$this->gateway = $gateways[$this->name];
@@ -71,7 +71,7 @@ final class Gateway_FIBPG_Blocks_Support extends AbstractPaymentMethodType
 			? require($script_asset_path)
 			: array(
 				'dependencies' => array(),
-				'version'      => '1.2.0'
+				'version'      => '1.2.2'
 			);
 		$script_url= FIBPG_Payments::plugin_url() . $script_path;
 
@@ -79,12 +79,12 @@ final class Gateway_FIBPG_Blocks_Support extends AbstractPaymentMethodType
             'wc-fib-payments-blocks',
             $script_url,
             $script_asset['dependencies'] ?? [],
-            $script_asset['version'] ?? '1.2.1',
+            $script_asset['version'] ?? '1.2.2',
             true
         );
 
 		if (function_exists('wp_set_script_translations')) {
-			wp_set_script_translations('wc-fib-payments-blocks', 'woocommerce-gateway-fib', FIBPG_Payments::plugin_abspath() . 'languages/');
+			wp_set_script_translations('wc-fib-payments-blocks', 'fib-payments-gateway', FIBPG_Payments::plugin_abspath() . 'languages/');
 		}
 		return ['wc-fib-payments-blocks'];
 	}

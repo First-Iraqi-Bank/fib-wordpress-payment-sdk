@@ -30,7 +30,7 @@ class FIBPG_Activator
 
         if (!$fibpg_page_query->have_posts()) {
             $fibpg_new_page_id = wp_insert_post([
-                'post_title' => $fibpg_page_title,
+                'post_title'   => sanitize_text_field($fibpg_page_title),
                 'post_content' => $fibpg_page_content,
                 'post_status' => 'private',
                 'post_type' => 'page',

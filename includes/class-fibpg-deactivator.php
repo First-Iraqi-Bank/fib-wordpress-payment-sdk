@@ -14,7 +14,7 @@ class FIBPG_Deactivator
      */
     public static function deactivate()
     {
-        self::remove_payment_gateway_page();
+        self::fibpg_remove_payment_gateway_page();
     }
 
     /**
@@ -24,9 +24,9 @@ class FIBPG_Deactivator
      *
      * @return void
      */
-    private static function remove_payment_gateway_page()
+    private static function fibpg_remove_payment_gateway_page()
     {
-        $fibpg_page_title = 'FIB Payment Gateway QR Code';
+        $fibpg_page_title = __('FIB Payment Gateway QR Code', 'fib-payments-gateway');
     
         $args = array(
             'title' => $fibpg_page_title,

@@ -1,5 +1,5 @@
 {
-	"name": "woocommerce-gateway-fib",
+	"name": "fib-payments-gateway",
 	"title": "FIB Payments Gateway",
 	"version": "1.0.6",
 	"author": "WooCommerce",
@@ -19,7 +19,7 @@
 		"build": "wp-scripts build && npm run i18n:build",
 		"i18n": "npm run i18n:build",
 		"i18n:build": "npm run i18n:pot && npm run i18n:json",
-		"i18n:pot": "/opt/homebrew/bin/wp i18n make-pot --exclude=\"node_modules/,languages/,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://woocommerce.com/my-account/create-a-ticket/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/woocommerce-gateway-fib.pot",
+		"i18n:pot": "/opt/homebrew/bin/wp i18n make-pot --exclude=\"node_modules/,languages/,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://woocommerce.com/my-account/create-a-ticket/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/fib-payments-gateway.pot",
 		"i18n:json": "/opt/homebrew/bin/wp i18n make-json languages --no-purge",
 		"packages-update": "wp-scripts packages-update",
 		"check-engines": "wp-scripts check-engines"
