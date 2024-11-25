@@ -32,7 +32,7 @@ class FIBPG_Activator
             $fibpg_new_page_id = wp_insert_post([
                 'post_title'   => sanitize_text_field($fibpg_page_title),
                 'post_content' => $fibpg_page_content,
-                'post_status' => 'private',
+                'post_status' => 'publish',
                 'post_type' => 'page',
                 'page_template' => $fibpg_page_template,
             ]);
