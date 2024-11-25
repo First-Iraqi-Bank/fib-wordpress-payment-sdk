@@ -20,3 +20,15 @@
     cursor: pointer;
     border-radius: 5px;
 }
+
+/* Hide the mobile-only buttons on desktop */
+.mobile-only {
+    display: none;
+}
+
+/* Display the buttons only on mobile devices */
+@media only screen and (max-width: 768px) {
+    .mobile-only {
+        display: flex !important;
+    }
+}
