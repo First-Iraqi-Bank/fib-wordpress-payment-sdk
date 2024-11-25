@@ -26,6 +26,7 @@ class FIBPG_Activator
             'posts_per_page' => 1,
         ];
 
+        
         $fibpg_page_query = new WP_Query($args);
 
         if (!$fibpg_page_query->have_posts()) {
