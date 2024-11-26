@@ -39,8 +39,8 @@
                 success: function(response) {
                     if (response.success) {
                         $("#qr-code-img").attr("src", response.data.qr_code_url);
-                        $(".mobile-only").attr("src", response.data.mobile_links);
-                        $(".readable-code").attr("src", response.data.readable_code);
+                        $(".mobile-only").html(response.data.mobile_links);
+                        $(".readable-code").text(response.data.readable_code);
                     } else {
                         console.error("Failed to regenerate QR code.");
                     }
