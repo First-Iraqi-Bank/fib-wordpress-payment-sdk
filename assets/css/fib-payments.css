@@ -7,8 +7,8 @@
 }
 
 .qr-code-container img {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
 }
 
 .qr-code-button {
@@ -19,4 +19,16 @@
     padding: 15px;
     cursor: pointer;
     border-radius: 5px;
+}
+
+/* Hide the mobile-only buttons on desktop */
+.mobile-only {
+    display: none;
+}
+
+/* Display the buttons only on mobile devices */
+@media only screen and (max-width: 768px) {
+    .mobile-only {
+        display: flex !important;
+    }
 }

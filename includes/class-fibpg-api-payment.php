@@ -14,7 +14,6 @@ class FIBPG_API_Payment
      */
     public static function create_qr_code($order, $access_token)
     {
-        session_start();
         $fibpg_base_url = get_option('fibpg_base_url');
         // Create a nonce
         $nonce = wp_create_nonce('wp_rest');
@@ -57,8 +56,25 @@ class FIBPG_API_Payment
             wc_add_notice(esc_html__('Something went wrong!', 'fib-payments-gateway'), 'error');
             return;
         }
-        $_SESSION['payment_id'] = sanitize_text_field($response_data['paymentId']);
-        return filter_var($response_data['qrCode'], FILTER_SANITIZE_URL);
+        $qr_code = $response_data['qrCode'];
+        $payment_id = $response_data['paymentId'];
+        $business_app_link = $response_data['businessAppLink'];
+        $corporate_app_link = $response_data['corporateAppLink'];
+        $personal_app_link = $response_data['personalAppLink'];
+
+        $readable_code = $response_data['readableCode'];
+
+        update_post_meta($order->get_id(), '_fib_payment_id', $payment_id);
+        // Save QR code URL in post meta
+        update_post_meta($order->get_id(), '_fib_qr_data', $qr_code);
+         // Save app links in post meta
+        update_post_meta($order->get_id(), '_fib_business_app_link', $business_app_link);
+        update_post_meta($order->get_id(), '_fib_corporate_app_link', $corporate_app_link);
+        update_post_meta($order->get_id(), '_fib_personal_app_link', $personal_app_link);
+
+        update_post_meta($order->get_id(), '_fib_readable_code', $readable_code);
+        
+        return $qr_code;
     }
 
     /**
@@ -70,7 +86,6 @@ class FIBPG_API_Payment
      */
     public static function cancel_qr_code($payment_id, $access_token)
     {
-        session_start();
         $fibpg_base_url = get_option('fibpg_base_url');
         $fibpg_payment_id = sanitize_text_field($payment_id);
         $fibpg_access_token = sanitize_text_field($access_token);
@@ -102,7 +117,6 @@ class FIBPG_API_Payment
 
         $response_code = wp_remote_retrieve_response_code($response);
 
-        unset($_SESSION['payment_id']);
         return $response_code;
     }
 }

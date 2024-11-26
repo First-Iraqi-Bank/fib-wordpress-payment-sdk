@@ -29,16 +29,18 @@
 
         $("#regenerate-qr-code").on("click", function() {
             $.ajax({
-                url: fibPaymentsData.ajaxurl, // Use the localized variable
+                url: fibPaymentsData.ajaxurl,
                 data: {
                     action: "regenerate_qr_code",
                     order_id: $("#order-id").val(),
-                    nonce: $("#nonce").val() // Include the nonce here if needed
+                    nonce: $("#nonce").val()
 
                 },
                 success: function(response) {
                     if (response.success) {
                         $("#qr-code-img").attr("src", response.data.qr_code_url);
+                        $(".mobile-only").attr("src", response.data.mobile_links);
+                        $(".readable-code").attr("src", response.data.readable_code);
                     } else {
                         console.error("Failed to regenerate QR code.");
                     }

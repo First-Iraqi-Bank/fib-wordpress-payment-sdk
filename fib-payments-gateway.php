@@ -4,7 +4,7 @@
  * Plugin Name: FIB Payments Gateway
  * Plugin URI: https://github.com/First-Iraqi-Bank
  * Description: Adds the FIB Payments gateway to your WooCommerce website.
- * Version: 1.2.2
+ * Version: 1.3.0
  *
  * Author: Gateway ICT Solutions
  * Author URI: https://www.the-gw.com/
@@ -13,7 +13,7 @@
  * Domain Path: /languages/
  *
  * Requires at least: 4.2
- * Tested up to: 4.9
+ * Tested up to: 6.5
  *
  * Copyright: © 2009-2023 Emmanouil Psychogyiopoulos.
  * License: GNU General Public License v3.0

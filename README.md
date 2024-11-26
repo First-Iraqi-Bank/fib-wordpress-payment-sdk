@@ -2,9 +2,9 @@
 - Contributors: thegateway
 - Tags: payments, WooCommerce, gateway, FIB
 - Requires at least: 4.2
-- Tested up to: 6.6
+- Tested up to: 6.5
 - Requires PHP: 7.2
-- Stable tag: 1.2.2
+- Stable tag: 1.3.0
 - License: GNU General Public License v3.0
 - License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -45,7 +45,6 @@ Please review the service provider's terms and privacy policy to understand how 
 
 - WordPress 4.2 or higher.
 - WooCommerce plugin installed and activated.
-- PHP session support enabled on your server.
 - A valid FIB account and API credentials.
 
 
@@ -171,6 +170,11 @@ For support, please visit the plugin's GitHub repository issues section.
 
 ## Changelog
 
+**1.3.0**
+* Added three app link buttons so user can directly open the relevent app without the need to scan the QR code.
+* Added readable code, to enter the code manually.
+* Improved QR code generation for better user experience.
+
 **1.2.2**
 * Added new payment error handling.
 * Improved nonce security for API requests.
@@ -205,8 +209,3 @@ For support, please visit the plugin's GitHub repository issues section.
 
 **1.1.0**
 * Initial release.
-
-## Screenshots
-1. FIB Payment Gateway settings in WooCommerce.
-2. QR code displayed during checkout.
-3. Order details with payment status.

@@ -74,7 +74,6 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 	
 	public function process_payment($order_id)
 	{
-		session_start();
 		try {
 			$fibpg_order = wc_get_order($order_id);
 
@@ -85,13 +84,7 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 			$fibpg_page_id = get_option('fibpg_payment_gateway_page_id');
 			$fibpg_page_url = get_permalink($fibpg_page_id);
 			$fibpg_qr_code_url = $this->get_fibpg_customer_url($fibpg_order);
-			
-			$_SESSION['qr_data'] = $fibpg_qr_code_url;
-			
-			$fibpg_payment_id = $this->get_payment_id_from_api();
-
-			$_SESSION['payment_id'] = $fibpg_payment_id;
-
+						
 			$fibpg_nonce = wp_create_nonce('custom_payment_qr_code_nonce');
 			$fibpg_redirect_url = add_query_arg(['order_id' => $order_id, 'nonce' => $fibpg_nonce], $fibpg_page_url);
 
@@ -119,21 +112,8 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 			
 		} catch (Exception $e) {
 			wc_add_notice(esc_html($e->getMessage()), 'error');
+			error_log(message: $e->getMessage());
 			return false;
 		}
-	}
-
-	/**
-     * Get payment ID from the session.
-     *
-     * @return string
-     * @throws Exception
-     */
-	public function get_payment_id_from_api()
-	{
-		if (isset($_SESSION['payment_id'])) {
-            return sanitize_text_field($_SESSION['payment_id']);
-		}
-		throw new Exception(esc_html__('Payment ID not found.', 'fib-payments-gateway')); // Escape the message
 	}
 }
