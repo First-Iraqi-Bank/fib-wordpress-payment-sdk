@@ -57,13 +57,14 @@ class FIBPG_API_Payment
             return;
         }
         $qr_code = $response_data['qrCode'];
+        $payment_id = $response_data['paymentId'];
         $business_app_link = $response_data['businessAppLink'];
         $corporate_app_link = $response_data['corporateAppLink'];
         $personal_app_link = $response_data['personalAppLink'];
 
         $readable_code = $response_data['readableCode'];
 
-        update_post_meta($order->get_id(), '_fib_payment_id', $response_data['paymentId']);
+        update_post_meta($order->get_id(), '_fib_payment_id', $payment_id);
         // Save QR code URL in post meta
         update_post_meta($order->get_id(), '_fib_qr_data', $qr_code);
          // Save app links in post meta
