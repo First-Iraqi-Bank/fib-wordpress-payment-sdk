@@ -48,8 +48,8 @@ jobs:
           echo "Tag $VERSION already exists in SVN. Skipping tag creation."
         else
           # Create the new tag
-          svn copy svn/trunk svn/tags/$VERSION
-          svn add svn/tags/$VERSION
+          echo "Tag $VERSION does not exist, creating new tag."
+          svn copy svn/trunk svn/tags/$VERSION -m "Tagging version $VERSION"
         fi
 
     - name: Commit changes to SVN
