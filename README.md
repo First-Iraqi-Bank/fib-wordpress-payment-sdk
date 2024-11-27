@@ -170,7 +170,7 @@ For support, please visit the plugin's GitHub repository issues section.
 
 ## Changelog
 
-**1.3.0**
+**1.3.1**
 * Fixes, and improvments.
 
 **1.3.0**
