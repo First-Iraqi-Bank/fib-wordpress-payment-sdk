@@ -17,6 +17,11 @@ jobs:
     - name: Setup SVN
       run: sudo apt-get install -y subversion
 
+    - name: Cleanup local SVN directory
+      run: |
+        # Remove any existing local SVN directory to avoid conflicts
+        rm -rf svn
+
     - name: Checkout WordPress.org SVN repo
       run: svn checkout https://plugins.svn.wordpress.org/fib-payments-gateway/ svn
       
@@ -37,10 +42,15 @@ jobs:
     - name: Tag version in SVN
       if: github.ref != ''
       run: |
-        # Create a tag based on the GitHub version
         VERSION=${GITHUB_REF#refs/tags/}
-        svn copy svn/trunk svn/tags/$VERSION
-        svn add svn/tags/$VERSION
+        # Check if the tag already exists in the remote SVN repository
+        if svn list https://plugins.svn.wordpress.org/fib-payments-gateway/tags/ | grep -q $VERSION; then
+          echo "Tag $VERSION already exists in SVN. Skipping tag creation."
+        else
+          # Create the new tag
+          svn copy svn/trunk svn/tags/$VERSION
+          svn add svn/tags/$VERSION
+        fi
 
     - name: Commit changes to SVN
       env:
