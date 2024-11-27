@@ -19,19 +19,14 @@ jobs:
 
     - name: Checkout WordPress.org SVN repo
       run: svn checkout https://plugins.svn.wordpress.org/fib-payments-gateway/ svn
-
-    - name: Exclude unwanted files
-      run: |
-        # Remove unwanted files before syncing with SVN
-        rm -f package-lock.json webpack.config.js phpcs.xml package.json .gitignore
-
+      
     - name: Sync trunk with GitHub
       run: |
         # Clear out the SVN trunk directory
         rm -rf svn/trunk/*
         
-        # Copy all files from GitHub repo into SVN trunk
-        cp -R * svn/trunk/
+        # Copy all files from GitHub repo into SVN trunk, excluding the 'svn' directory and unwanted files
+        rsync -av --exclude='svn' --exclude='package-lock.json' --exclude='webpack.config.js' --exclude='phpcs.xml' --exclude='package.json' --exclude='.gitignore' ./ svn/trunk/
 
         # Force add all files to SVN
         svn add --force svn/trunk/*
@@ -43,8 +38,9 @@ jobs:
       if: github.ref != ''
       run: |
         # Create a tag based on the GitHub version
-        svn copy svn/trunk svn/tags/${GITHUB_REF_NAME}
-        svn add svn/tags/${GITHUB_REF_NAME}
+        VERSION=${GITHUB_REF#refs/tags/}
+        svn copy svn/trunk svn/tags/$VERSION
+        svn add svn/tags/$VERSION
 
     - name: Commit changes to SVN
       env:
@@ -52,4 +48,5 @@ jobs:
         SVN_PASSWORD: ${{ secrets.WP_SVN_PASSWORD }}
       run: |
         # Commit changes with the version tag
-        svn commit -m "Deploy version ${GITHUB_REF_NAME}" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
+        VERSION=${GITHUB_REF#refs/tags/}
+        svn commit -m "Deploy version $VERSION" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
