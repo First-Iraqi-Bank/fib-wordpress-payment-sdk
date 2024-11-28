@@ -58,4 +58,4 @@ jobs:
         SVN_PASSWORD: ${{ secrets.WP_SVN_PASSWORD }}
       run: |
         VERSION=${GITHUB_REF#refs/tags/}
-        svn commit -m "Deploy version $VERSION" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
+        svn commit svn/ -m "Deploy version $VERSION" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
