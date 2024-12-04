@@ -35,6 +35,7 @@ class FIBPG_Shortcodes
                 wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . '../resources/js/frontend/fib-payments.js', array('jquery'), '1.0.0', true);
                 wp_localize_script('fib-payments-js', 'fibPaymentsData', array(
                     'ajaxurl' => admin_url('admin-ajax.php'),
+                    'checkoutUrl' => home_url(),
                 ));
             }
         }
