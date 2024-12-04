@@ -12,7 +12,9 @@
                 success: function(response) {
                     try {
                         if (response.success && response.data.status === "PAID") {
-                            window.location.href = response.data.redirect_url;
+                            window.location.href = fibPaymentsData.checkoutUrl + 
+                                "/checkout/order-received/?order_id=" + 
+                                $("#order-id").val();
                         } else if (!response.success) {
                             console.error(response.errors);
                         }
