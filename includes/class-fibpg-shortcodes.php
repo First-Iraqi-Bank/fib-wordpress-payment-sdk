@@ -127,7 +127,9 @@ class FIBPG_Shortcodes
             WC()->cart->empty_cart();
             $order->update_meta_data('fib_payment_status', 'Paid via FIB Payment Gateway');
             $order->save();
-            wp_send_json_success(['status' => 'PAID']);
+            $order_received_url = wc_get_endpoint_url('order-received', $fibpg_order_id, wc_get_checkout_url());
+
+            wp_send_json_success(['status' => 'PAID', 'site_url' => $order_received_url]);
         } else {
             wp_send_json_success(['status' => 'UNPAID']);
         }

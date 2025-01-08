@@ -32,7 +32,7 @@ class FIBPG_API_Auth {
                     'client_id' => sanitize_text_field($fibpg_client_id),
                     'client_secret' => sanitize_text_field($fibpg_client_secret),
                 ),
-                'sslverify' => false, // IMPORTANT: remove this line in production
+                'sslverify' => false,
                 'timeout' => 45,
             ));
 

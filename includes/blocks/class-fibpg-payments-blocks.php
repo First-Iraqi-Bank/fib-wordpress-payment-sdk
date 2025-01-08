@@ -31,13 +31,6 @@ final class FIBPG_Gateway_Blocks_Support extends AbstractPaymentMethodType
 	 */
 	public function initialize()
 	{
-		$this->settings = get_option('woocommerce_fibpg_settings', []);
-
-		// Error handling for missing settings
-		if (empty($this->settings)) {
-            return new WP_Error('missing_settings', esc_html__('FIB Payments settings are not configured properly.', 'fib-payments-gateway'));
-        }
-
 		$gateways = WC()->payment_gateways->payment_gateways();
 
 		// Error handling for missing gateway
@@ -55,6 +48,10 @@ final class FIBPG_Gateway_Blocks_Support extends AbstractPaymentMethodType
 	 */
 	public function is_active(): bool
 	{
+		if ($this->gateway === null) {
+			error_log('Gateway is not initialized.');
+			return false;
+		}
 		return $this->gateway->is_available();
 	}
 

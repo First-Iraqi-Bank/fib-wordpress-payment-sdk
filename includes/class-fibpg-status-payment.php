@@ -28,7 +28,7 @@ class FIBPG_STATUS_Payment {
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . sanitize_text_field($access_token),
             ),
-            // 'sslverify' => false, // IMPORTANT: remove this line in production
+            'sslverify' => false,
             'timeout' => 45,
         ));
 

@@ -44,7 +44,7 @@ class FIBPG_API_Payment
                     __('FIB Payment for Order #%s', 'fib-payments-gateway'), 
                     $order->get_id()
                 )),            ]),
-            // 'sslverify' => false, // IMPORTANT: remove this line in production
+            'sslverify' => false,
             'timeout' => 45,
         ]);
 
@@ -113,6 +113,8 @@ class FIBPG_API_Payment
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $fibpg_access_token,
             ],
+            'sslverify' => false,
+            'timeout' => 45,
         ]);
 
         $response_code = wp_remote_retrieve_response_code($response);
