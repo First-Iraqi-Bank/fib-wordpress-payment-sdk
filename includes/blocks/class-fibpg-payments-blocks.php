@@ -80,9 +80,9 @@ final class FIBPG_Gateway_Blocks_Support extends AbstractPaymentMethodType
             true
         );
 
-		if (function_exists('wp_set_script_translations')) {
-			wp_set_script_translations('wc-fib-payments-blocks', 'fib-payments-gateway', FIBPG_Payments::plugin_abspath() . 'languages/');
-		}
+		// if (function_exists('wp_set_script_translations')) {
+		wp_set_script_translations('wc-fib-payments-blocks', 'fib-payments-gateway', FIBPG_Payments::plugin_abspath() . 'languages/');
+		// }
 		return ['wc-fib-payments-blocks'];
 	}
 
@@ -94,9 +94,9 @@ final class FIBPG_Gateway_Blocks_Support extends AbstractPaymentMethodType
 	public function get_payment_method_data()
 	{
 		return [
-			'title'=> $this->get_setting('title'),
-			'description'=> $this->get_setting('description'),
-			'icon'=> plugin_dir_url(__DIR__) . 'assets/images/fi_logo.png',
+			'title'=>  'FIB Payments',
+			'description'=> 'Pay with FIB using secure methods',
+			'icon'=> plugin_dir_url(__DIR__) . 'assets/js/images/fi_logo.ef8cfdc5.png',
 			'supports'=> array_filter($this->gateway->supports, [$this->gateway, 'supports'])
 		];
 	}

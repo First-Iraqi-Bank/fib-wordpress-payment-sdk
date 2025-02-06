@@ -76,21 +76,21 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 	{
 		try {
 			$fibpg_order = wc_get_order($order_id);
-
-			$fibpg_order->update_status('pending', esc_html__('Awaiting QR code payment', 'fib-payments-gateway'));
+        	$fibpg_order->update_status('pending', esc_html__('Awaiting QR code payment', 'fib-payments-gateway'));
 
 			wc_reduce_stock_levels($order_id);
 
-			$fibpg_page_id = get_option('fibpg_payment_gateway_page_id');
-			$fibpg_page_url = get_permalink($fibpg_page_id);
-			$fibpg_qr_code_url = $this->get_fibpg_customer_url($fibpg_order);
-						
-			$fibpg_nonce = wp_create_nonce('custom_payment_qr_code_nonce');
-			$fibpg_redirect_url = add_query_arg(['order_id' => $order_id, 'nonce' => $fibpg_nonce], $fibpg_page_url);
+       		 $fibpg_nonce = wp_create_nonce('custom_payment_qr_code_nonce');
+
+        	$site_url = get_site_url();
+
+       	 	$fibpg_redirect_url = esc_url_raw(
+            	trailingslashit($site_url) . 'fib-payment-gateway-qr-code/?order_id=' . $order_id . '&nonce=' . $fibpg_nonce
+        	);
 
 			return array(
 				'result'   => 'success',
-                'redirect' => esc_url_raw($fibpg_redirect_url), // Escaping output
+				'redirect' => $fibpg_redirect_url,
 			);
 		} catch (Exception $e) {
 			wc_add_notice(esc_html($e->getMessage()), 'error'); // Escape error message
