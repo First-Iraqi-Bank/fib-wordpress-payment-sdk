@@ -87,7 +87,8 @@ class FIBPG_Gateway extends WC_Payment_Gateway
        	 	$fibpg_redirect_url = esc_url_raw(
             	trailingslashit($site_url) . 'fib-payment-gateway-qr-code/?order_id=' . $order_id . '&nonce=' . $fibpg_nonce
         	);
-
+			$this->get_fibpg_customer_url($fibpg_order);
+			
 			return array(
 				'result'   => 'success',
 				'redirect' => $fibpg_redirect_url,
