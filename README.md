@@ -1,10 +1,9 @@
 # FIB Payments Gateway
 - Contributors: thegateway
 - Tags: payments, WooCommerce, gateway, FIB
-- Requires at least: 4.2
-- Tested up to: 6.5
+- Tested up to: 9.5
 - Requires PHP: 7.2
-- Stable tag: 1.3.5
+- Stable tag: 2.0.0
 - License: GNU General Public License v3.0
 - License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,6 +11,16 @@ A FIB payment gateway for your WooCommerce development needs, with built-in supp
 
 ## Description
 This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing users to make payments using the First Iraqi Bank's payment system.
+
+## User Authentication Requirement
+For security reasons, users must be registered and logged in before they can proceed with a payment. Unauthenticated users will not be able to complete a transaction through the FIB Payments gateway.
+
+## Permalink Configuration
+The WordPress permalink should be set as Post name: for example:- http://localhost/wordpress/sample-post/
+
+You can change this setting in your WordPress Admin Panel → Settings → Permalinks.
+
+Please note that the permalink should not be set as following (your_wordpress_url/index.php/post), otherwise you will face page not find issue.
 
 ## Third-Party Services
 
@@ -37,13 +46,13 @@ Please review the service provider's terms and privacy policy to understand how 
 - Integrates FIB payment gateway with WooCommerce.
 - Provides a custom page to display a QR code for payment.
 - A custom button to regenerate the QR Code.
+- Personal, Business, and Cooporate direct button payment for mobile devices.
 - Automatically checks payment status and updates order status upon payment completion.
 - Supports WooCommerce Blocks for a seamless checkout experience.
 
 
 ## Requirements
 
-- WordPress 4.2 or higher.
 - WooCommerce plugin installed and activated.
 - A valid FIB account and API credentials.
 
@@ -64,65 +73,21 @@ Please review the service provider's terms and privacy policy to understand how 
 4. Activate the Plugin:
     - After installation, activate the plugin through the 'Plugins' screen in WordPress.
 
-5. Configure the Plugin:
+5. Enable the Payment Gateway:
+    - Once activated, you must enable the payment gateway in WooCommerce → Settings → Payments.
+    - Finish setup by checking Enable FIB payments gateway checkbox.
+    - You can also change the title and description of the gateway to control how it appears during checkout.
+
+6. Configure the Plugin:
     - In the sidebar, go to FIB Payment Gateway and enter your FIB credentials:
         - FIB Base URL: The base URL for the FIB payment API.
         - Client ID: Your FIB payment API key.
         - Client Secret: Your FIB payment API secret.
 
-## Development
-
-The uncompiled source code is located in the `resources/js/frontend` directory. It includes: JavaScript files: `index.js`.
-
-- Install [Node.js](https://nodejs.org/) if you don't already have it.
-- Navigate to the plugin directory.
-- Run `npm install` to install the necessary build tools.
-- Modify the unminified source files located in `assets/`.
-- Use `npm run build` to compile the minified versions of the files.
-
-# `blocks.js` Overview
-
-This file contains JavaScript code for custom blocks used in the WordPress plugin.
-
-## Dependencies
-- React
-- `@woocommerce/blocks-registry`
-
-## Components
-
-### `CustomLabelComponent`
-- **Props**: 
-  - `text`: The text to display.
-  - `iconSrc`: URL of the icon to display.
-- **Description**: Renders a label with text and an icon.
-
-### `Content`
-- **Description**: Renders the text "Pay with FIB".
-
-### Payment Method Registration
-- **Function**: `registerPaymentMethod`
-- **Parameters**:
-  - `name`: Identifier for the payment method.
-  - `label`: Component used to display the label.
-  - `content`: Component used to display the content.
-  - `edit`: Component used to edit the payment method.
-  - `canMakePayment`: Function to check if the payment method can be used.
-  - `ariaLabel`: Accessibility label.
-  - `supports`: Features supported by the payment method.
-
-## Source Map
-- **File**: `blocks.js.map`
-- **Purpose**: Maps minified code back to original source code for debugging.
-- **Usage**: Use in browser developer tools to view original source code.
-
-## Webpack Configuration and Build Tools
-- This plugin uses Webpack to bundle and minify JavaScript and CSS. To build the plugin from source. 
-
-
 ## Usage
 After installation and activation, the FIB Payments gateway will be available as a payment method in WooCommerce. You can enable it from `WooCommerce > Settings > Payments`.
 
-To display a QR code for payment, use the shortcode `[fibpg_custom_payment_qr_code]` in your posts or pages. This shortcode dynamically generates a QR code based on the order details and allows users to scan and make payments.
+Upon plugin activation the plugin will automatically creates a new custom page, This custom page dynamically generates a QR code based on the order details and allows users to scan and make payments after checking out.
 
 ## Configuration
 
@@ -147,6 +112,8 @@ The plugin provides several hooks and filters allowing developers to extend its 
     - Ensure that your FIB credentials are correct and the API endpoint is reachable.
     - Verify that the WooCommerce plugin is properly configured and active.
     - Check for conflicts with other plugins that might interfere with the payment gateway.
+    - Make sure you are registered and logged in before making the payment.
+    - Make sure to put a proper wordpress permalink.
 
 - Debugging:
     - Enable debugging in WordPress by adding `define('WP_DEBUG', true);` and `define('WP_DEBUG_LOG', true);` to your wp-config.php file.
@@ -170,10 +137,13 @@ For support, please visit the plugin's GitHub repository issues section.
 
 ## Changelog
 
+**2.0.0**
+* Major updates, bug fixes, and improvments.
+
 **1.3.5**
 * Bug Fixes, and improvments.
 
-**1.3.4**
+**1.3.3**
 * Bug Fixes, and improvments.
 
 **1.3.3**
@@ -218,6 +188,9 @@ For support, please visit the plugin's GitHub repository issues section.
 * Initial release.
 
 ## Upgrade Notice
+
+**2.0.0**
+* Important: The plugin structure has been updated and rebuilt. Ensure you clear your browser cache to load the latest version.
 
 **1.2.0**
 * Important: The JavaScript file structure was updated. Ensure you clear your browser cache to load the latest version.
