@@ -30,14 +30,13 @@ class FIBPG_Shortcodes
             // Enqueue CSS file
             wp_enqueue_style('fib-payments-css', plugin_dir_url(__FILE__) . '../assets/css/fib-payments.css', array(), '1.0.0');
 
-            // Enqueue JavaScript file for logged-in users
-            if (is_user_logged_in()) {
-                wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . '../resources/js/frontend/fib-payments.js', array('jquery'), '1.0.0', true);
-                wp_localize_script('fib-payments-js', 'fibPaymentsData', array(
-                    'ajaxurl' => admin_url('admin-ajax.php'),
-                    'checkoutUrl' => home_url(),
-                ));
-            }
+            // Enqueue JavaScript file for all users
+            wp_enqueue_script('fib-payments-js', plugin_dir_url(__FILE__) . '../resources/js/frontend/fib-payments.js', array('jquery'), '1.0.0', true);
+            wp_localize_script('fib-payments-js', 'fibPaymentsData', array(
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'checkoutUrl' => home_url(),
+            ));
+            
         }
     }
 
