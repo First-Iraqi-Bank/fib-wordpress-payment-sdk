@@ -3,7 +3,7 @@
 - Tags: payments, WooCommerce, gateway, FIB
 - Tested up to: 9.5
 - Requires PHP: 7.2
-- Stable tag: 2.0.0
+- Stable tag: 2.1.0
 - License: GNU General Public License v3.0
 - License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,15 +12,12 @@ A FIB payment gateway for your WooCommerce development needs, with built-in supp
 ## Description
 This WordPress plugin adds the FIB Payments gateway to WooCommerce, allowing users to make payments using the First Iraqi Bank's payment system.
 
-## User Authentication Requirement
-For security reasons, users must be registered and logged in before they can proceed with a payment. Unauthenticated users will not be able to complete a transaction through the FIB Payments gateway.
-
 ## Permalink Configuration
 The WordPress permalink should be set as Post name: for example:- http://localhost/wordpress/sample-post/
 
 You can change this setting in your WordPress Admin Panel → Settings → Permalinks.
 
-Please note that the permalink should not be set as following (your_wordpress_url/index.php/post), otherwise you will face page not find issue.
+Please note that the permalink should not be set as following (your_wordpress_url/index.php/post), otherwise you will face page not found issue.
 
 ## Third-Party Services
 
@@ -112,7 +109,6 @@ The plugin provides several hooks and filters allowing developers to extend its 
     - Ensure that your FIB credentials are correct and the API endpoint is reachable.
     - Verify that the WooCommerce plugin is properly configured and active.
     - Check for conflicts with other plugins that might interfere with the payment gateway.
-    - Make sure you are registered and logged in before making the payment.
     - Make sure to put a proper wordpress permalink.
 
 - Debugging:
@@ -136,6 +132,10 @@ For support, please visit the plugin's GitHub repository issues section.
  - You can obtain FIB API credentials by contacting First Iraqi Bank support team at support@fib-payment.com.
 
 ## Changelog
+
+**2.1.0**
+* Allow all users to regenerate QR codes.
+* Allow all users to check payment status.
 
 **2.0.0**
 * Major updates, bug fixes, and improvments.
