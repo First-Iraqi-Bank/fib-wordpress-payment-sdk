@@ -43,7 +43,9 @@ class FIBPG_API_Payment
                     // translators: %s: order ID
                     __('FIB Payment for Order #%s', 'fib-payments-gateway'), 
                     $order->get_id()
-                )),            ]),
+                )),
+                'redirectUri' => esc_url_raw($order->get_checkout_order_received_url()) ?? '',
+            ]),
             'sslverify' => false,
             'timeout' => 45,
         ]);

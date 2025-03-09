@@ -3,7 +3,7 @@
 - Tags: payments, WooCommerce, gateway, FIB
 - Tested up to: 9.5
 - Requires PHP: 7.2
-- Stable tag: 2.1.0
+- Stable tag: 2.2.0
 - License: GNU General Public License v3.0
 - License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -91,15 +91,6 @@ Upon plugin activation the plugin will automatically creates a new custom page, 
 - API Settings: Configure your FIB API settings including the Base URL, Client ID, and Client Secret.
 - QR Code Settings: Customize the appearance and functionality of the QR code displayed to users.
 
-## Hooks and Filters
-- Actions:
-    - wp_ajax_check_payment_status: Handles AJAX request for authenticated users to check payment status.
-    - wp_ajax_nopriv_check_payment_status: Handles AJAX request for non-authenticated users to check payment status.
-
-- Filters:
-    - fib_payment_gateway_api_endpoint: Filter to modify the FIB API endpoint.
-    - fib_payment_gateway_qr_code: Filter to customize the QR code generation process.
-
 ## Customization
 The plugin provides several hooks and filters allowing developers to extend its functionality and integrate custom features as needed.
 
@@ -132,6 +123,9 @@ For support, please visit the plugin's GitHub repository issues section.
  - You can obtain FIB API credentials by contacting First Iraqi Bank support team at support@fib-payment.com.
 
 ## Changelog
+
+**2.2.0**
+* Added redirect uri upon payment creation.
 
 **2.1.0**
 * Allow all users to regenerate QR codes.
