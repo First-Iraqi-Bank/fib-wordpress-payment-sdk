@@ -35,9 +35,9 @@ const label = decodeEntities( settings.title ) || defaultLabel;
  */
 const Content = () => {
 	 return (
-			<div>
-				Pay with FIB
-			</div>
+		<div>
+			{decodeEntities(settings.description) || __('Pay with FIB using secure methods', 'fib-payments-gateway')}
+		</div>
 	  );
 };
 
