@@ -43,7 +43,9 @@ class FIBPG_Shortcodes
     public static function fibpg_payment_qr_code_shortcode()
     {
         ob_start();
-        if (function_exists('wc_print_notices')) {
+        if (function_exists('wc_output_notices')) {
+            wc_output_notices();
+        } elseif (function_exists('wc_print_notices')) {
             wc_print_notices();
         }
     
