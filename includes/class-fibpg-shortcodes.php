@@ -43,7 +43,11 @@ class FIBPG_Shortcodes
     public static function fibpg_payment_qr_code_shortcode()
     {
         ob_start();
-        wc_print_notices();
+        if (function_exists('wc_output_notices')) {
+            wc_output_notices();
+        } elseif (function_exists('wc_print_notices')) {
+            wc_print_notices();
+        }
     
         // Validate and sanitize nonce
         if (!isset($_GET['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['nonce'])), 'custom_payment_qr_code_nonce')) {
