@@ -74,7 +74,6 @@ class FIBPG_Gateway extends WC_Payment_Gateway
 
 		// Actions.
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
-		add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
 		add_action('woocommerce_api_wc_gateway_' . $this->id, array($this, 'check_response'));
 	}
 
