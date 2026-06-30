@@ -46,7 +46,6 @@ class FIBPG_API_Payment
                 )),
                 'redirectUri' => esc_url_raw($order->get_checkout_order_received_url()) ?? '',
             ]),
-            'sslverify' => false,
             'timeout' => 45,
         ]);
 
@@ -115,7 +114,6 @@ class FIBPG_API_Payment
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $fibpg_access_token,
             ],
-            'sslverify' => false,
             'timeout' => 45,
         ]);
 
