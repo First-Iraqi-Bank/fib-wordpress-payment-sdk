@@ -3,7 +3,7 @@
 - Tags: payments, WooCommerce, gateway, FIB
 - Tested up to: 9.5
 - Requires PHP: 7.2
-- Stable tag: 2.3.2
+- Stable tag: 2.3.3
 - License: GNU General Public License v3.0
 - License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -123,6 +123,9 @@ For support, please visit the plugin's GitHub repository issues section.
  - You can obtain FIB API credentials by contacting First Iraqi Bank support team at support@fib-payment.com.
 
 ## Changelog
+**2.3.3**
+* Enable TLS certificate verification on FIB API requests.
+
 **2.3.2**
 * Bug Fixes, and improvments.
 
